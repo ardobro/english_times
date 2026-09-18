@@ -38,52 +38,53 @@ body[data-zone="future"] { background: linear-gradient(135deg, #3b82f6 0%, #06b6
 /* ============ HEADER ============ */
 header {
   background: linear-gradient(135deg, var(--theme-1), var(--theme-2));
-  padding: 14px 18px;
+  padding: 13px 18px;
   color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   transition: background 0.7s ease;
 }
-.user-block { display: flex; align-items: center; gap: 11px; flex: 1; min-width: 180px; }
+.user-block { display: flex; align-items: center; gap: 11px; flex: 1; min-width: 150px; }
 .avatar {
-  width: 46px; height: 46px;
-  border-radius: 50%;
+  width: 44px; height: 44px; border-radius: 50%;
   background: rgba(255,255,255,0.22);
   border: 2px solid rgba(255,255,255,0.5);
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
-  flex-shrink: 0;
-  cursor: pointer;
+  font-size: 22px; flex-shrink: 0; cursor: pointer;
   transition: transform 0.25s, background 0.2s;
   backdrop-filter: blur(6px);
 }
 .avatar:hover { transform: scale(1.08) rotate(-4deg); background: rgba(255,255,255,0.35); }
-.user-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.user-sub { font-size: 11px; opacity: 0.85; }
+.user-name { font-size: 14.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-sub { font-size: 11px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
 .icon-btn {
   background: rgba(255,255,255,0.18);
   border: 1.5px solid rgba(255,255,255,0.35);
   color: #fff;
-  width: 38px; height: 38px;
+  width: 36px; height: 36px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 17px;
+  font-size: 15px;
   transition: all 0.2s;
   display: flex; align-items: center; justify-content: center;
   position: relative;
 }
 .icon-btn:hover { background: rgba(255,255,255,0.32); transform: translateY(-1px); }
+.icon-btn.lang-btn {
+  width: auto;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
 .icon-btn .dot {
   position: absolute;
   top: -3px; right: -3px;
-  background: #ef4444;
-  color: #fff;
+  background: #ef4444; color: #fff;
   border-radius: 50%;
-  min-width: 18px; height: 18px;
+  min-width: 17px; height: 17px;
   font-size: 10px; font-weight: 800;
   display: none; align-items: center; justify-content: center;
   padding: 0 4px;
@@ -99,12 +100,12 @@ header {
 .score-badge {
   background: rgba(255,255,255,0.22);
   border: 1.5px solid rgba(255,255,255,0.4);
-  padding: 7px 13px 7px 9px;
+  padding: 6px 12px 6px 9px;
   border-radius: 999px;
   display: flex; align-items: center; gap: 6px;
-  font-weight: 800; font-size: 15px;
+  font-weight: 800; font-size: 14.5px;
 }
-.score-badge .s-icon { font-size: 19px; filter: drop-shadow(0 0 4px rgba(255,200,200,0.8)); }
+.score-badge .s-icon { font-size: 18px; filter: drop-shadow(0 0 4px rgba(255,200,200,0.8)); }
 .score-badge.bump { animation: bumpScore 0.5s cubic-bezier(0.34,1.56,0.64,1); }
 @keyframes bumpScore {
   0% { transform: scale(1); }
@@ -123,34 +124,101 @@ header {
 .timeline-scroll::-webkit-scrollbar { height: 6px; }
 .timeline-scroll::-webkit-scrollbar-thumb { background: #c5c8e8; border-radius: 3px; }
 
-.timeline { min-width: 640px; padding: 14px 20px 18px; }
+.timeline { min-width: 640px; padding: 12px 20px 16px; position: relative; }
 
 .timeline-head {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  font-size: 10px;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: #8a8aa8;
-  margin-bottom: 8px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase;
+  font-weight: 700; color: #8a8aa8; margin-bottom: 4px;
 }
 .timeline-head span:nth-child(1) { text-align: left; }
 .timeline-head span:nth-child(2) { text-align: center; }
 .timeline-head span:nth-child(3) { text-align: right; }
 .timeline-head .head-now { color: var(--theme-1); transition: color 0.6s; }
 
-.timeline-track {
+/* --- axis with animated marker --- */
+.timeline-axis-wrap {
+  position: relative;
+  height: 22px;
+  margin-bottom: 10px;
+}
+.timeline-axis {
+  position: absolute;
+  top: 50%; left: 10px; right: 10px;
   height: 4px;
   border-radius: 2px;
+  transform: translateY(-50%);
   background: linear-gradient(90deg,
     #f59e0b 0%, #f59e0b 20%,
     #ef4444 27%,
     #764ba2 45%, #764ba2 55%,
     #06b6d4 73%,
     #3b82f6 80%, #3b82f6 100%);
-  margin-bottom: 14px;
-  opacity: 0.5;
+  opacity: 0.55;
+}
+
+/* marks on axis */
+.timeline-ticks {
+  position: absolute;
+  top: 50%; left: 10px; right: 10px;
+  height: 0;
+  display: flex;
+  justify-content: space-between;
+}
+.tick {
+  width: 6px; height: 6px;
+  background: #fff;
+  border: 2px solid #c5c8e8;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s;
+}
+.tick.zone-past { border-color: #f59e0b; }
+.tick.zone-present { border-color: #764ba2; }
+.tick.zone-future { border-color: #3b82f6; }
+.tick.active {
+  transform: translate(-50%, -50%) scale(1.5);
+  box-shadow: 0 0 12px currentColor;
+}
+
+/* moving marker dot */
+.timeline-marker {
+  position: absolute;
+  top: 50%;
+  left: 16.67%;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--theme-1);
+  transform: translate(-50%, -50%);
+  transition: left 0.6s cubic-bezier(0.34,1.56,0.64,1), background 0.6s;
+  z-index: 3;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 5px color-mix(in srgb, var(--theme-1) 50%, transparent),
+    0 4px 14px color-mix(in srgb, var(--theme-1) 60%, transparent);
+}
+.timeline-marker::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid var(--theme-1);
+  animation: pulseRing 2.2s infinite;
+  opacity: 0.7;
+}
+.timeline-marker.jumping {
+  animation: markerJump 0.7s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes markerJump {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  40% { transform: translate(-50%, -80%) scale(1.35); }
+  70% { transform: translate(-50%, -50%) scale(0.9); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes pulseRing {
+  0% { transform: scale(0.7); opacity: 0.9; }
+  100% { transform: scale(1.7); opacity: 0; }
 }
 
 .tense-grid {
@@ -161,20 +229,16 @@ header {
 .tense-zone { display: flex; flex-direction: column; gap: 6px; }
 
 .tense-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: flex; align-items: center; gap: 8px;
   padding: 8px 10px;
   border: 2px solid #dfe3ff;
   border-radius: 10px;
   background: #fff;
   cursor: pointer;
-  font-size: 11.5px;
-  font-weight: 600;
+  font-size: 11.5px; font-weight: 600;
   color: #5b4bb0;
   transition: all 0.2s ease;
-  text-align: left;
-  line-height: 1.2;
+  text-align: left; line-height: 1.2;
   position: relative;
 }
 .tense-btn[data-zone="past"] { --zone: #f59e0b; }
@@ -198,36 +262,27 @@ header {
 
 /* ============ SUB-NAV ============ */
 nav.sub-nav {
-  display: flex;
-  background: #fafbff;
-  border-bottom: 2px solid #eef1ff;
-  padding: 0 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  display: flex; background: #fafbff; border-bottom: 2px solid #eef1ff;
+  padding: 0 6px; overflow-x: auto; scrollbar-width: none;
 }
 nav.sub-nav::-webkit-scrollbar { display: none; }
 nav.sub-nav button {
-  flex: 1 0 auto;
-  padding: 11px 12px;
+  flex: 1 0 auto; padding: 11px 12px;
   border: none; background: transparent;
-  cursor: pointer;
-  font-size: 13px; font-weight: 600;
-  color: #8a8aa8;
-  transition: all 0.2s;
+  cursor: pointer; font-size: 13px; font-weight: 600;
+  color: #8a8aa8; transition: all 0.2s;
   border-radius: 10px 10px 0 0;
   margin: 6px 3px 0;
   white-space: nowrap;
 }
 nav.sub-nav button:hover { background: #eef1ff; color: #4a3b8f; }
 nav.sub-nav button.active {
-  color: var(--theme-1);
-  background: #fff;
+  color: var(--theme-1); background: #fff;
   box-shadow: 0 -3px 0 var(--theme-1) inset;
   transition: box-shadow 0.5s, color 0.5s;
 }
 nav.sub-nav button[data-sub="advanced"].active {
-  box-shadow: 0 -3px 0 #ef4444 inset;
-  color: #b91c1c;
+  box-shadow: 0 -3px 0 #ef4444 inset; color: #b91c1c;
 }
 
 /* ============ PANELS ============ */
@@ -271,17 +326,22 @@ th { background: #eef1ff; color: #4a3b8f; font-weight: 700; }
 tr:last-child td { border-bottom: none; }
 
 /* ============ QUIZ ============ */
+.quiz { padding: 4px 0; }
 .quiz-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; font-size: 13.5px; color: #666; }
 .quiz-header b { color: var(--theme-1); transition: color 0.5s; }
 .mode-badge { font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: 0.5px; text-transform: uppercase; }
 .mode-badge.basic { background: #eef1ff; color: #4a3b8f; }
 .mode-badge.advanced { background: #fee2e2; color: #b91c1c; }
 .mode-badge.exam { background: #fef3c7; color: #92400e; }
+.mode-badge.ielts { background: #dbeafe; color: #1e40af; }
+.mode-badge.ielts-hard { background: #fce7f3; color: #9f1239; }
 
 .progress-bar { width: 100%; height: 8px; background: #e6e6f5; border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--theme-2), var(--theme-1)); width: 0%; transition: width 0.4s ease, background 0.5s; }
 .progress-fill.advanced { background: linear-gradient(90deg, #ef4444, #f59e0b); }
 .progress-fill.exam { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+.progress-fill.ielts { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
+.progress-fill.ielts-hard { background: linear-gradient(90deg, #ec4899, #3b82f6); }
 
 .card {
   background: linear-gradient(135deg, #f6f8ff 0%, #eef1ff 100%);
@@ -294,20 +354,21 @@ tr:last-child td { border-bottom: none; }
   border: 2px solid #dfe3ff;
   margin-bottom: 16px;
 }
-.question { font-size: 18.5px; font-weight: 600; color: #333; line-height: 1.45; }
+.question { font-size: 18.5px; font-weight: 600; color: #333; line-height: 1.5; }
 .question-hint { font-size: 12.5px; color: #8a8aa8; margin-top: 6px; font-style: italic; }
 .question .blank { display: inline-block; min-width: 60px; border-bottom: 2px dashed var(--theme-1); color: var(--theme-1); font-weight: 700; transition: color 0.5s, border-color 0.5s; }
 
 .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
 .option {
-  padding: 14px 11px;
+  padding: 14px 12px;
   border: 2px solid #dfe3ff;
   border-radius: 12px;
   background: #fff;
   cursor: pointer;
-  font-size: 15px; font-weight: 500;
+  font-size: 14.5px; font-weight: 500;
   transition: all 0.2s ease; color: #333;
   text-align: center;
+  line-height: 1.35;
 }
 .option:hover:not(.disabled) { border-color: var(--theme-1); background: #f6f4ff; transform: translateY(-2px); }
 .option.correct { background: #d4f8d4; border-color: #34a853; color: #1b5e20; }
@@ -341,7 +402,7 @@ tr:last-child td { border-bottom: none; }
 }
 .reorder-built.correct { border-color: #34a853; background: #eafbe9; border-style: solid; }
 .reorder-built.wrong { border-color: #e53935; background: #fdecec; border-style: solid; }
-.reorder-built:empty::after { content: 'Нажимай слова ниже, чтобы построить...'; color: #b0b3d0; font-size: 12.5px; font-style: italic; }
+.reorder-built:empty::after { content: attr(data-placeholder); color: #b0b3d0; font-size: 12.5px; font-style: italic; }
 .reorder-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; min-height: 42px; }
 .word-chip {
   padding: 9px 14px; border: 2px solid #dfe3ff; border-radius: 11px;
@@ -368,9 +429,10 @@ tr:last-child td { border-bottom: none; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn.advanced { background: linear-gradient(135deg, #ef4444, #f59e0b); }
 .btn.exam { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+.btn.ielts { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+.btn.ielts-hard { background: linear-gradient(135deg, #ec4899, #3b82f6); }
 .btn.outline {
-  background: #fff;
-  color: var(--theme-1);
+  background: #fff; color: var(--theme-1);
   border: 2px solid var(--theme-1);
 }
 .btn.outline:hover:not(:disabled) { background: #f6f4ff; }
@@ -396,18 +458,18 @@ tr:last-child td { border-bottom: none; }
 .result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .result-actions .btn { flex: 1; min-width: 130px; }
 
-/* ============ EXAMS ============ */
-.exams-wrap { padding: 26px 22px 32px; }
-.exams-wrap h2 {
+/* ============ EXAMS / IELTS WRAP ============ */
+.section-wrap { padding: 24px 22px 30px; }
+.section-wrap h2 {
   font-size: 22px; color: var(--theme-1); margin-bottom: 8px;
   display: flex; align-items: center; gap: 10px;
 }
-.exams-wrap > p { color: #888; font-size: 14.5px; margin-bottom: 20px; line-height: 1.5; }
+.section-wrap > p { color: #888; font-size: 14.5px; margin-bottom: 18px; line-height: 1.5; }
 
-.exam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.exam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
 .exam-card {
-  padding: 20px 18px;
-  border-radius: 18px;
+  padding: 18px 16px;
+  border-radius: 16px;
   border: 2px solid #dfe3ff;
   background: linear-gradient(135deg, #fafbff, #f0f4ff);
   cursor: pointer;
@@ -415,25 +477,20 @@ tr:last-child td { border-bottom: none; }
   position: relative;
   overflow: hidden;
 }
-.exam-card::before {
-  content: '';
-  position: absolute; inset: 0;
-  opacity: 0; transition: opacity 0.3s;
-  background: linear-gradient(135deg, #667eea22, #764ba222);
-}
 .exam-card:hover { transform: translateY(-3px); border-color: var(--theme-1); box-shadow: 0 12px 28px rgba(118,75,162,0.18); }
-.exam-card:hover::before { opacity: 1; }
-.exam-icon { font-size: 42px; margin-bottom: 10px; display: block; }
-.exam-name { font-size: 17px; font-weight: 800; color: #4a3b8f; margin-bottom: 6px; }
-.exam-desc { font-size: 13px; color: #8a8aa8; line-height: 1.45; margin-bottom: 10px; }
-.exam-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.exam-icon { font-size: 38px; margin-bottom: 8px; display: block; }
+.exam-name { font-size: 16px; font-weight: 800; color: #4a3b8f; margin-bottom: 5px; }
+.exam-desc { font-size: 12.5px; color: #8a8aa8; line-height: 1.45; margin-bottom: 10px; }
+.exam-meta { display: flex; gap: 6px; flex-wrap: wrap; }
 .exam-chip {
-  font-size: 11px; font-weight: 700;
-  padding: 4px 10px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700;
+  padding: 3px 9px; border-radius: 999px;
   background: #fff; color: #5b4bb0;
   border: 1.5px solid #dfe3ff;
 }
 .exam-chip.hot { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
+.exam-chip.ielts { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+.exam-chip.ielts-hard { background: #fce7f3; color: #9f1239; border-color: #fbcfe8; }
 
 /* ============ ACHIEVEMENTS ============ */
 .ach-grid {
@@ -494,21 +551,12 @@ tr:last-child td { border-bottom: none; }
   font-size: 13px; font-weight: 700; color: #5b4bb0;
   margin: 16px 0 8px; text-align: left;
 }
-.emoji-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
-}
+.emoji-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
 .emoji-opt {
-  aspect-ratio: 1;
-  border: 2px solid #eef1ff;
-  border-radius: 12px;
-  background: #fafbff;
-  font-size: 24px;
-  cursor: pointer;
+  aspect-ratio: 1; border: 2px solid #eef1ff; border-radius: 12px;
+  background: #fafbff; font-size: 24px; cursor: pointer;
   transition: all 0.15s;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0;
+  display: flex; align-items: center; justify-content: center; padding: 0;
 }
 .emoji-opt:hover { transform: scale(1.1); border-color: var(--theme-1); background: #f6f4ff; }
 .emoji-opt.selected {
@@ -531,7 +579,7 @@ tr:last-child td { border-bottom: none; }
   border: 2px solid #f59e0b;
   border-radius: 14px;
   padding: 13px 15px;
-  min-width: 250px; max-width: 330px;
+  min-width: 240px; max-width: 330px;
   box-shadow: 0 12px 32px rgba(245, 158, 11, 0.45);
   transform: translateX(400px) scale(0.9);
   opacity: 0;
@@ -564,18 +612,20 @@ tr:last-child td { border-bottom: none; }
   .options { grid-template-columns: 1fr; }
   .question { font-size: 16.5px; }
   .subtab { padding: 16px 14px 22px; }
+  .section-wrap { padding: 18px 14px 22px; }
   table { font-size: 13px; }
   th, td { padding: 7px 8px; }
   nav.sub-nav button { font-size: 12px; padding: 9px 8px; }
-  .timeline { padding: 12px 14px 16px; min-width: 560px; }
+  .timeline { padding: 10px 14px 14px; min-width: 560px; }
   .tense-btn { font-size: 10.5px; padding: 7px 8px; gap: 6px; }
   .shape.continuous { width: 16px; }
   .shape.perfect-continuous { width: 14px; }
-  header { padding: 11px 12px; }
+  header { padding: 10px 12px; }
   .user-sub { display: none; }
-  .avatar { width: 42px; height: 42px; font-size: 22px; }
-  .icon-btn { width: 36px; height: 36px; font-size: 15px; }
-  .score-badge { padding: 6px 10px 6px 8px; font-size: 14px; }
+  .avatar { width: 42px; height: 42px; font-size: 20px; }
+  .icon-btn { width: 34px; height: 34px; font-size: 14px; }
+  .icon-btn.lang-btn { padding: 0 10px; font-size: 11px; }
+  .score-badge { padding: 6px 10px 6px 8px; font-size: 13.5px; }
 }
 </style>
 </head>
@@ -584,16 +634,18 @@ tr:last-child td { border-bottom: none; }
 <div class="app" id="app" data-zone="present">
   <header>
     <div class="user-block">
-      <div class="avatar" id="avatar" title="Изменить профиль">🐷</div>
+      <div class="avatar" id="avatar" title="Profile">🐷</div>
       <div class="user-meta" style="min-width:0">
-        <div class="user-name" id="userName">Гость</div>
-        <div class="user-sub" id="userSub">Учим времена английского</div>
+        <div class="user-name" id="userName">Guest</div>
+        <div class="user-sub" id="userSub">Learn English tenses</div>
       </div>
     </div>
     <div class="header-actions">
-      <button class="icon-btn" id="examsBtn" title="Экзамены">🏁</button>
-      <button class="icon-btn" id="shareBtn" title="Поделиться">📤</button>
-      <button class="icon-btn" id="achBtn" title="Достижения">🏆<span class="dot" id="achDot">0</span></button>
+      <button class="icon-btn lang-btn" id="langBtn" title="Language / Язык">EN</button>
+      <button class="icon-btn" id="examsBtn" title="Exams">🏁</button>
+      <button class="icon-btn" id="ieltsBtn" title="IELTS">🎓</button>
+      <button class="icon-btn" id="shareBtn" title="Share">📤</button>
+      <button class="icon-btn" id="achBtn" title="Achievements">🏆<span class="dot" id="achDot">0</span></button>
       <div class="score-badge" id="scoreBadge">
         <span class="s-icon">🐽</span>
         <span id="scoreValue">0</span>
@@ -605,18 +657,23 @@ tr:last-child td { border-bottom: none; }
     <div class="timeline-scroll">
       <div class="timeline">
         <div class="timeline-head">
-          <span>← Прошлое</span>
-          <span class="head-now">● Сейчас</span>
-          <span>Будущее →</span>
+          <span data-i18n="past">← Past</span>
+          <span class="head-now" data-i18n="now">● Now</span>
+          <span data-i18n="future">Future →</span>
         </div>
-        <div class="timeline-track"></div>
+        <div class="timeline-axis-wrap">
+          <div class="timeline-axis"></div>
+          <div class="timeline-ticks" id="timelineTicks"></div>
+          <div class="timeline-marker" id="timelineMarker"></div>
+        </div>
         <div class="tense-grid" id="tenseGrid"></div>
       </div>
     </div>
   </div>
 
   <div id="topicsWrap"></div>
-  <div id="examsWrap" class="hidden"></div>
+  <div id="examsWrap" class="hidden section-wrap"></div>
+  <div id="ieltsWrap" class="hidden section-wrap"></div>
 </div>
 
 <div id="toastLayer"></div>
@@ -626,12 +683,12 @@ tr:last-child td { border-bottom: none; }
 <div class="modal-backdrop hidden" id="welcomeModal">
   <div class="modal-card">
     <div class="modal-emoji" id="welcomeEmoji">🐷</div>
-    <div class="modal-title" id="welcomeTitle">Привет!</div>
-    <div class="modal-sub" id="welcomeSub">Как тебя зовут? Будем собирать <b>Фунтики</b> 🐽 и открывать достижения 🏆</div>
-    <input type="text" class="name-input" id="nameInput" maxlength="20" placeholder="Твоё имя..." autocomplete="off">
-    <div class="emoji-picker-label">Выбери аватар:</div>
+    <div class="modal-title" id="welcomeTitle">Hi!</div>
+    <div class="modal-sub" id="welcomeSub"></div>
+    <input type="text" class="name-input" id="nameInput" maxlength="20" placeholder="Your name..." autocomplete="off">
+    <div class="emoji-picker-label" id="emojiLabel">Pick your avatar:</div>
     <div class="emoji-grid" id="emojiGrid"></div>
-    <button class="btn" id="startBtn" style="margin-top:18px">Поехали! 🚀</button>
+    <button class="btn" id="startBtn" style="margin-top:18px">Go! 🚀</button>
   </div>
 </div>
 
@@ -639,18 +696,144 @@ tr:last-child td { border-bottom: none; }
 <div class="modal-backdrop hidden" id="achModal">
   <div class="modal-card" style="max-width:660px">
     <div class="modal-emoji">🏆</div>
-    <div class="modal-title">Достижения</div>
-    <div class="modal-sub">Собрано: <b id="achCount">0</b> из <b id="achTotal">0</b></div>
+    <div class="modal-title" id="achModalTitle">Achievements</div>
+    <div class="modal-sub" id="achModalSub"></div>
     <div class="ach-grid" id="achGrid"></div>
-    <button class="btn" id="closeAchBtn" style="margin-top:16px">Закрыть</button>
+    <button class="btn" id="closeAchBtn" style="margin-top:16px">Close</button>
   </div>
 </div>
 
 <script>
 /* =========================================================
-   CONSTANTS & STORAGE
+   I18N
    ========================================================= */
-const STORAGE_KEY = 'english-tenses-app-v3';
+const I18N = {
+  ru: {
+    appTitle: 'English Tenses',
+    appSubtitle: 'Учим времена английского',
+    greeting: 'Привет, {name}!',
+    guest: 'Гость',
+    userSub: 'Учим времена · {n} ответов',
+    past: '← Прошлое', now: '● Сейчас', future: 'Будущее →',
+    theory: '📘 Теория', test: '🎯 Тест', advanced: '🔥 Продвинутый',
+    exams: '🏁 Экзамены', ielts: '🎓 IELTS', ieltsTitle: '🎓 IELTS — продвинутая грамматика',
+    ieltsSub: 'Самые сложные вопросы уровня IELTS Academic: тонкие различия времён, инверсия, условные, косвенная речь.',
+    examsTitle: '🏁 Экзамены',
+    examsSub: 'Смешанные вопросы из разных времён — попробуй угадать, какое время здесь используется!',
+    backToExams: '← К списку экзаменов',
+    backToIelts: '← К разделам IELTS',
+    basicExam: 'Базовый экзамен',
+    basicExamDesc: 'Простой уровень: выбор ответа. 15 вопросов из всех 12 времён.',
+    advExam: 'Продвинутый экзамен',
+    advExamDesc: '10 вопросов из продвинутых тестов: ввод и сборка предложений.',
+    megaExam: 'Мега-экзамен',
+    megaExamDesc: '20 смешанных вопросов всех типов. Настоящее испытание!',
+    ieltsTenseChoice: 'Tense Mastery',
+    ieltsTenseChoiceDesc: 'Выбор времени в сложном контексте: инверсия, условные, wish, it\'s time.',
+    ieltsErrorCorrection: 'Error Correction',
+    ieltsErrorCorrectionDesc: 'Найди грамматически верный вариант — классика IELTS.',
+    ieltsTransformation: 'Sentence Building',
+    ieltsTransformationDesc: 'Собери сложные предложения с продвинутыми временами.',
+    ieltsFullMock: 'IELTS Full Mock',
+    ieltsFullMockDesc: '20 смешанных вопросов самого высокого уровня сложности.',
+    modeBasic: '🎯 Базовый', modeAdvanced: '🔥 Продвинутый',
+    modeExam: '🏁 Экзамен', modeExamAdv: '🏁 Экзамен: продвинутый', modeExamMega: '🏁 Мега-экзамен',
+    modeIelts: '🎓 IELTS', modeIeltsHard: '🎓 IELTS: хардкор',
+    questionLabel: 'Вопрос', scoreLabel: 'Очки',
+    nextQ: 'Следующий вопрос →', showResult: 'Показать результат 🏁',
+    check: 'Проверить', placeholderInput: 'Введи ответ...', placeholderReorder: 'Нажимай слова ниже, чтобы построить...',
+    correct: '✅ Верно!', incorrect: '❌ Неверно.', answerWas: 'Правильный ответ:',
+    rightAnswer: 'Правильно:',
+    resultDone: 'Готово!', again: '🔄 Ещё раз', shareBtn: '📤 Поделиться',
+    perfect: 'Идеально!', perfectMsg: 'Все ответы верные — ты знаешь это время!',
+    great: 'Отличный результат!', greatMsg: 'Хорошо усвоил. Ещё чуть-чуть практики!',
+    ok: 'Неплохо!', okMsg: 'Стоит повторить правила образования.',
+    repeat: 'Нужно повторить', repeatMsg: 'Перечитай теорию и попробуй снова.',
+    funtiki: 'Фунтиков', bonusForPerfect: '+{n} за идеал',
+    achievementsTitle: 'Достижения', collected: 'Собрано:', of: 'из', close: 'Закрыть',
+    welcomeTitle: 'Привет!',
+    welcomeSub: 'Как тебя зовут? Будем собирать <b>Фунтики</b> 🐽 и открывать достижения 🏆',
+    welcomeSubEdit: 'Измени имя или аватар',
+    pickAvatar: 'Выбери аватар:',
+    goBtn: 'Поехали! 🚀', saveBtn: 'Сохранить ✓',
+    copied: 'Скопировано!', copiedDesc: 'Вставь сообщение в чат или соцсеть.',
+    saved: 'Сохранено', savedDesc: 'Профиль обновлён',
+    shareText: '{avatar} {name} набрал {score} Фунтиков в English Tenses! {ach} 🏆',
+    achSingular: '{n} ачивка', achPlural: '{n} ачивок',
+    challenge: 'Обгони меня 🐽',
+    resultShareExtra: 'Результат: {score}/{total} ({percent}%) 🔥',
+    diffEasy: 'Easy', diffHard: 'Hard', diffMega: 'Mega', diffIelts: 'IELTS', diffExpert: 'Expert',
+    theory: 'Theory',
+  },
+  en: {
+    appTitle: 'English Tenses',
+    appSubtitle: 'Learn English tenses',
+    greeting: 'Hi, {name}!',
+    guest: 'Guest',
+    userSub: 'Learning tenses · {n} answers',
+    past: '← Past', now: '● Now', future: 'Future →',
+    theory: '📘 Theory', test: '🎯 Test', advanced: '🔥 Advanced',
+    exams: '🏁 Exams', ielts: '🎓 IELTS', ieltsTitle: '🎓 IELTS — Advanced grammar',
+    ieltsSub: 'The hardest IELTS Academic questions: subtle tense choices, inversion, conditionals, reported speech.',
+    examsTitle: '🏁 Exams',
+    examsSub: 'Mixed questions from different tenses — try to guess which tense is used!',
+    backToExams: '← Back to exams',
+    backToIelts: '← Back to IELTS sections',
+    basicExam: 'Basic Exam',
+    basicExamDesc: 'Easy level: multiple choice. 15 questions from all 12 tenses.',
+    advExam: 'Advanced Exam',
+    advExamDesc: '10 questions from advanced tests: input & sentence building.',
+    megaExam: 'Mega Exam',
+    megaExamDesc: '20 mixed questions of all types. A real challenge!',
+    ieltsTenseChoice: 'Tense Mastery',
+    ieltsTenseChoiceDesc: 'Tense choice in complex context: inversion, conditionals, wish, it\'s time.',
+    ieltsErrorCorrection: 'Error Correction',
+    ieltsErrorCorrectionDesc: 'Find the grammatically correct option — IELTS classic.',
+    ieltsTransformation: 'Sentence Building',
+    ieltsTransformationDesc: 'Build complex sentences with advanced tenses.',
+    ieltsFullMock: 'IELTS Full Mock',
+    ieltsFullMockDesc: '20 mixed questions at the highest difficulty.',
+    modeBasic: '🎯 Basic', modeAdvanced: '🔥 Advanced',
+    modeExam: '🏁 Exam', modeExamAdv: '🏁 Exam: advanced', modeExamMega: '🏁 Mega exam',
+    modeIelts: '🎓 IELTS', modeIeltsHard: '🎓 IELTS: hardcore',
+    questionLabel: 'Question', scoreLabel: 'Score',
+    nextQ: 'Next question →', showResult: 'Show result 🏁',
+    check: 'Check', placeholderInput: 'Type your answer...', placeholderReorder: 'Tap words below to build...',
+    correct: '✅ Correct!', incorrect: '❌ Wrong.', answerWas: 'Correct answer:',
+    rightAnswer: 'Correct:',
+    resultDone: 'Done!', again: '🔄 Try again', shareBtn: '📤 Share',
+    perfect: 'Perfect!', perfectMsg: 'All answers correct — you know this tense!',
+    great: 'Great result!', greatMsg: 'Well done. Just a bit more practice!',
+    ok: 'Not bad!', okMsg: 'Worth reviewing the rules.',
+    repeat: 'Need to review', repeatMsg: 'Re-read the theory and try again.',
+    funtiki: 'Funtiki', bonusForPerfect: '+{n} for perfect',
+    achievementsTitle: 'Achievements', collected: 'Collected:', of: 'of', close: 'Close',
+    welcomeTitle: 'Hi!',
+    welcomeSub: 'What\'s your name? We\'ll collect <b>Funtiki</b> 🐽 and unlock achievements 🏆',
+    welcomeSubEdit: 'Change name or avatar',
+    pickAvatar: 'Pick your avatar:',
+    goBtn: 'Let\'s go! 🚀', saveBtn: 'Save ✓',
+    copied: 'Copied!', copiedDesc: 'Paste it into chat or social media.',
+    saved: 'Saved', savedDesc: 'Profile updated',
+    shareText: '{avatar} {name} earned {score} Funtiki in English Tenses! {ach} 🏆',
+    achSingular: '{n} achievement', achPlural: '{n} achievements',
+    challenge: 'Beat me 🐽',
+    resultShareExtra: 'Result: {score}/{total} ({percent}%) 🔥',
+    diffEasy: 'Easy', diffHard: 'Hard', diffMega: 'Mega', diffIelts: 'IELTS', diffExpert: 'Expert',
+    theory: 'Theory',
+  }
+};
+
+function t(key, params) {
+  let s = (I18N[state.lang] && I18N[state.lang][key]) || I18N.ru[key] || key;
+  if (params) for (const k in params) s = s.replaceAll('{' + k + '}', params[k]);
+  return s;
+}
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const STORAGE_KEY = 'english-tenses-app-v4';
 const BASIC_SIZE = 10;
 const ADVANCED_SIZE = 5;
 const FUNTIKI_BASIC = 1;
@@ -658,17 +841,20 @@ const FUNTIKI_ADVANCED = 3;
 const FUNTIKI_EXAM_BASIC = 2;
 const FUNTIKI_EXAM_ADV = 4;
 const FUNTIKI_EXAM_MEGA = 5;
+const FUNTIKI_IELTS = 6;
+const FUNTIKI_IELTS_HARD = 8;
 const BONUS_PERFECT_BASIC = 5;
 const BONUS_PERFECT_ADV = 10;
 const BONUS_PERFECT_EXAM = 20;
+const BONUS_PERFECT_IELTS = 40;
 const AVAILABLE_EMOJIS = ['🐷','🐽','🦊','🐻','🐼','🐨','🦁','🐯','🐸','🐵','🦉','🦄','🐙','🐝','🦋','🐢','🐺','🦖'];
 
 function defaultState() {
   return {
-    name: '', avatar: '🐷',
+    name: '', avatar: '🐷', lang: 'ru',
     totalFuntiki: 0, answeredQuestions: 0,
-    bestBasic: {}, bestAdvanced: {}, bestExam: {},
-    completedBasic: [], completedAdvanced: [], completedExam: [],
+    bestBasic: {}, bestAdvanced: {}, bestExam: {}, bestIelts: {},
+    completedBasic: [], completedAdvanced: [], completedExam: [], completedIelts: [],
     achievements: []
   };
 }
@@ -682,40 +868,47 @@ let state = (() => {
 function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {} }
 
 /* =========================================================
-   TENSES DATA
+   THEORY (bilingual)
    ========================================================= */
+function T(ru, en) { return { ru, en }; }
+
 const TENSES = [
-  /* ==================== PAST ==================== */
+  /* ============ PAST ============ */
   {
     id: 'past-simple', name: 'Past Simple', zone: 'past', type: 'simple',
-    theory: `
+    theory: T(`
       <h2>Past Simple — прошедшее простое</h2>
-      <p><b>Past Simple</b> описывает <b>завершённое действие в прошлом</b>, обычно с указанием времени.</p>
-      <h3>1. Как образуется</h3>
-      <div class="formula">V2 = правильные V + ed &nbsp;|&nbsp; неправильные — 2-я форма</div>
+      <p><b>Past Simple</b> — завершённое действие в прошлом, обычно с указанием времени.</p>
+      <h3>1. Формула</h3>
+      <div class="formula">V2 = V + ed (правильные) | 2-я форма (неправильные)</div>
       <table>
         <tr><th>Тип</th><th>Утв.</th><th>Отриц.</th><th>Вопрос</th></tr>
         <tr><td>Правильный</td><td>I worked.</td><td>I didn't work.</td><td>Did I work?</td></tr>
         <tr><td>Неправильный</td><td>I went.</td><td>I didn't go.</td><td>Did I go?</td></tr>
       </table>
-      <p>В отрицаниях и вопросах — <b>did / didn't + V1</b>.</p>
-      <h3>2. Правила -ed</h3>
-      <ul>
-        <li><b>+ed</b>: work → worked</li>
-        <li>-e → <b>+d</b>: like → liked</li>
-        <li>согл. + y → <b>-ied</b>: study → studied</li>
-        <li>гласн. + y → <b>+ed</b>: play → played</li>
-        <li>согл.+гласн.+согл. → удвоение: stop → stopped</li>
-      </ul>
-      <h3>3. Когда используется</h3>
-      <ul>
-        <li><b>Завершённое действие:</b> I saw him yesterday.</li>
-        <li><b>Последовательность событий:</b> She came home, had dinner and went to bed.</li>
-        <li><b>Привычки в прошлом:</b> When I was a child, I played football every day.</li>
-      </ul>
-      <h3>4. Слова-маркеры</h3>
+      <h3>2. Когда</h3>
+      <ul><li>Завершённое действие: <i>I saw him yesterday.</i></li>
+      <li>Последовательность: <i>She came home, had dinner and went to bed.</i></li>
+      <li>Привычки в прошлом: <i>When I was a child, I played football every day.</i></li></ul>
+      <h3>3. Маркеры</h3>
       <div class="example"><b>yesterday, last week, ... ago, in 1990, when I was young, then</b></div>
-    `,
+    `, `
+      <h2>Past Simple</h2>
+      <p>Completed action in the past, usually with a time marker.</p>
+      <h3>1. Form</h3>
+      <div class="formula">V2 = V + ed (regular) | 2nd form (irregular)</div>
+      <table>
+        <tr><th>Type</th><th>+</th><th>−</th><th>?</th></tr>
+        <tr><td>Regular</td><td>I worked.</td><td>I didn't work.</td><td>Did I work?</td></tr>
+        <tr><td>Irregular</td><td>I went.</td><td>I didn't go.</td><td>Did I go?</td></tr>
+      </table>
+      <h3>2. When</h3>
+      <ul><li>Completed action: <i>I saw him yesterday.</i></li>
+      <li>Sequence of events: <i>She came home, had dinner and went to bed.</i></li>
+      <li>Past habits: <i>When I was a child, I played football every day.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>yesterday, last week, ... ago, in 1990, then</b></div>
+    `),
     basic: [
       { q: "She ___ to Paris last year.", options: ["goes","went","is going","gone"], correct: 1, explain: "«last year» → went." },
       { q: "___ you see him yesterday?", options: ["Did","Do","Are","Were"], correct: 0, explain: "Did + V1." },
@@ -724,90 +917,92 @@ const TENSES = [
       { q: "They ___ at the party yesterday.", options: ["are","were","was","be"], correct: 1, explain: "They → were." },
       { q: "What ___ you do last weekend?", options: ["did","do","does","are"], correct: 0, explain: "did + S + V1." },
       { q: "She ___ a book last month.", options: ["reads","read","is reading","reading"], correct: 1, explain: "read → read." },
-      { q: "Какое предложение ВЕРНО?", options: ["He didn't went.","He didn't go.","He not went.","He doesn't went."], correct: 1, explain: "didn't + V1." },
-      { q: "When I was a child, I ___ football every day.", options: ["play","played","am playing","was playing"], correct: 1, explain: "Привычка в прошлом." },
+      { q: "Which sentence is CORRECT?", options: ["He didn't went.","He didn't go.","He not went.","He doesn't went."], correct: 1, explain: "didn't + V1." },
+      { q: "When I was a child, I ___ football every day.", options: ["play","played","am playing","was playing"], correct: 1, explain: "Past habit." },
       { q: "___ she at home yesterday?", options: ["Was","Were","Did","Is"], correct: 0, explain: "she → was." }
     ],
     advanced: [
       { type: 'input', q: 'She ___ (go) to Paris last year.', answers: ['went'], explain: 'go → went.' },
-      { type: 'reorder', hint: 'Я видел его вчера на вокзале.', words: ['I','saw','him','yesterday','at','the','station'], explain: 'I saw him yesterday at the station.' },
+      { type: 'reorder', hint: 'I saw him yesterday at the station.', words: ['I','saw','him','yesterday','at','the','station'], explain: 'I saw him yesterday at the station.' },
       { type: 'input', q: 'We ___ (visit) our grandparents last weekend.', answers: ['visited'], explain: 'visit → visited.' },
-      { type: 'reorder', hint: 'Он не сделал домашнюю работу вчера.', words: ["He","didn't",'finish','his','homework','yesterday'], explain: "He didn't finish his homework yesterday." },
+      { type: 'reorder', hint: 'He didn\'t finish his homework yesterday.', words: ["He","didn't",'finish','his','homework','yesterday'], explain: "He didn't finish his homework yesterday." },
       { type: 'input', q: 'When I was a child, I ___ (play) football every day.', answers: ['played'], explain: 'play → played.' }
     ]
   },
   {
     id: 'past-continuous', name: 'Past Continuous', zone: 'past', type: 'continuous',
-    theory: `
+    theory: T(`
       <h2>Past Continuous — прошедшее длительное</h2>
-      <p><b>Past Continuous</b> показывает <b>действие в процессе</b> в определённый момент в прошлом.</p>
-      <h3>1. Как образуется</h3>
+      <p>Действие <b>в процессе</b> в определённый момент в прошлом.</p>
+      <h3>1. Формула</h3>
       <div class="formula">was / were + V-ing</div>
-      <table>
-        <tr><th>Местоимение</th><th>to be</th><th>Пример</th></tr>
-        <tr><td>I / He / She / It</td><td>was</td><td>I was reading.</td></tr>
-        <tr><td>You / We / They</td><td>were</td><td>They were reading.</td></tr>
-      </table>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>Процесс в конкретный момент:</b> At 8 pm I was having dinner.</li>
-        <li><b>Прерванное действие:</b> I was reading when he called.</li>
-        <li><b>Параллельные действия:</b> While I was cooking, she was reading.</li>
-        <li><b>Атмосфера, фон:</b> The sun was shining, birds were singing...</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
-      <div class="example"><b>at 5 pm yesterday, while, when, all day yesterday, the whole evening, at that moment</b></div>
-      <div class="tip"><b>Формула:</b> When + Past Simple, Past Continuous — <i>I was sleeping when the phone rang.</i></div>
-    `,
+      <h3>2. Когда</h3>
+      <ul><li>Процесс в момент: <i>At 8 pm I was having dinner.</i></li>
+      <li>Прерванное: <i>I was reading when he called.</i></li>
+      <li>Параллельно: <i>While I was cooking, she was reading.</i></li></ul>
+      <h3>3. Маркеры</h3>
+      <div class="example"><b>at 5 pm yesterday, while, when, all day yesterday, at that moment</b></div>
+    `, `
+      <h2>Past Continuous</h2>
+      <p>Action in progress at a specific past moment.</p>
+      <h3>1. Form</h3>
+      <div class="formula">was / were + V-ing</div>
+      <h3>2. When</h3>
+      <ul><li>Specific moment: <i>At 8 pm I was having dinner.</i></li>
+      <li>Interrupted: <i>I was reading when he called.</i></li>
+      <li>Parallel: <i>While I was cooking, she was reading.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>at 5 pm yesterday, while, when, all day yesterday</b></div>
+    `),
     basic: [
-      { q: "At 8 pm yesterday I ___ dinner.", options: ["cooked","was cooking","cook","am cooking"], correct: 1, explain: "Процесс → was cooking." },
+      { q: "At 8 pm yesterday I ___ dinner.", options: ["cooked","was cooking","cook","am cooking"], correct: 1, explain: "was + cooking." },
       { q: "They ___ football when it started to rain.", options: ["played","were playing","play","are playing"], correct: 1, explain: "were playing." },
       { q: "She ___ TV at 9 o'clock last night.", options: ["watched","was watching","watch","watches"], correct: 1, explain: "was watching." },
-      { q: "While I ___, the phone rang.", options: ["slept","was sleeping","sleep","am sleeping"], correct: 1, explain: "while + длительное." },
-      { q: "What ___ you ___ at 5 pm?", options: ["was / doing","were / doing","did / do","are / doing"], correct: 1, explain: "you → were + doing." },
-      { q: "Какое предложение ВЕРНО?", options: ["I was read a book.","I was reading a book.","I were reading.","I reading was."], correct: 1, explain: "I → was + reading." },
+      { q: "While I ___, the phone rang.", options: ["slept","was sleeping","sleep","am sleeping"], correct: 1, explain: "while + continuous." },
+      { q: "What ___ you ___ at 5 pm?", options: ["was / doing","were / doing","did / do","are / doing"], correct: 1, explain: "were + doing." },
+      { q: "Which sentence is CORRECT?", options: ["I was read a book.","I was reading a book.","I were reading.","I reading was."], correct: 1, explain: "I was + reading." },
       { q: "They ___ when I came in.", options: ["talked","were talking","talk","are talking"], correct: 1, explain: "were talking." },
       { q: "He ___ his car all day yesterday.", options: ["washed","was washing","wash","washes"], correct: 1, explain: "was washing." },
       { q: "We ___ TV when the lights went out.", options: ["watched","were watching","watch","are watching"], correct: 1, explain: "were watching." },
       { q: "___ it raining when you left?", options: ["Was","Were","Did","Is"], correct: 0, explain: "it → was." }
     ],
     advanced: [
-      { type: 'input', q: 'At 8 pm yesterday I ___ (cook) dinner.', answers: ['was cooking'], explain: 'I → was + cooking.' },
-      { type: 'reorder', hint: 'Они играли в футбол, когда начался дождь.', words: ['They','were','playing','football','when','it','started','to','rain'], explain: 'They were playing football when it started to rain.' },
-      { type: 'input', q: 'While I ___ (sleep), the phone rang.', answers: ['was sleeping'], explain: 'I → was + sleeping.' },
-      { type: 'reorder', hint: 'Что ты делал в 5 вечера?', words: ['What','were','you','doing','at','5','pm'], explain: 'What were you doing at 5 pm?' },
-      { type: 'input', q: "She ___ (watch) TV at 9 o'clock last night.", answers: ['was watching'], explain: 'She → was + watching.' }
+      { type: 'input', q: 'At 8 pm yesterday I ___ (cook) dinner.', answers: ['was cooking'], explain: 'was + cooking.' },
+      { type: 'reorder', hint: 'They were playing football when it started to rain.', words: ['They','were','playing','football','when','it','started','to','rain'], explain: 'They were playing football when it started to rain.' },
+      { type: 'input', q: 'While I ___ (sleep), the phone rang.', answers: ['was sleeping'], explain: 'was + sleeping.' },
+      { type: 'reorder', hint: 'What were you doing at 5 pm?', words: ['What','were','you','doing','at','5','pm'], explain: 'What were you doing at 5 pm?' },
+      { type: 'input', q: "She ___ (watch) TV at 9 o'clock last night.", answers: ['was watching'], explain: 'was + watching.' }
     ]
   },
   {
     id: 'past-perfect', name: 'Past Perfect', zone: 'past', type: 'perfect',
-    theory: `
+    theory: T(`
       <h2>Past Perfect — предпрошедшее</h2>
-      <p><b>Past Perfect</b> показывает действие, которое <b>завершилось раньше другого действия в прошлом</b>. «Прошлое в прошлом».</p>
-      <h3>1. Как образуется</h3>
-      <div class="formula">had + V3 (past participle)</div>
-      <table>
-        <tr><th>Тип</th><th>Форма</th><th>Пример</th></tr>
-        <tr><td>Утв.</td><td>had + V3</td><td>I had finished.</td></tr>
-        <tr><td>Отриц.</td><td>hadn't + V3</td><td>I hadn't finished.</td></tr>
-        <tr><td>Вопрос</td><td>Had + S + V3?</td><td>Had you finished?</td></tr>
-      </table>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>Действие до другого действия:</b> When I arrived, she had already left.</li>
-        <li><b>С by the time / before / after:</b> By 8 pm they had finished.</li>
-        <li><b>В косвенной речи:</b> He said he had seen it.</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
-      <div class="example"><b>before, after, by the time, already, yet, just, never, when</b></div>
-      <div class="tip"><b>Важно!</b> Past Perfect всегда привязан к моменту в прошлом. Если просто прошлое — используется Past Simple.</div>
-    `,
+      <p>Действие <b>завершилось раньше другого действия в прошлом</b>.</p>
+      <h3>1. Формула</h3>
+      <div class="formula">had + V3</div>
+      <h3>2. Когда</h3>
+      <ul><li>Действие до другого: <i>When I arrived, she had already left.</i></li>
+      <li>С by / before / after: <i>By 8 pm they had finished.</i></li></ul>
+      <h3>3. Маркеры</h3>
+      <div class="example"><b>before, after, by the time, already, yet, just, never</b></div>
+    `, `
+      <h2>Past Perfect</h2>
+      <p>Action completed <b>before</b> another past action.</p>
+      <h3>1. Form</h3>
+      <div class="formula">had + V3</div>
+      <h3>2. When</h3>
+      <ul><li>Action before another: <i>When I arrived, she had already left.</i></li>
+      <li>With by / before / after: <i>By 8 pm they had finished.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>before, after, by the time, already, yet, just, never</b></div>
+    `),
     basic: [
       { q: "She ___ the film before we came.", options: ["had watched","has watched","watched","watches"], correct: 0, explain: "had + V3." },
       { q: "By 8 pm they ___ dinner.", options: ["had finished","finished","have finished","finish"], correct: 0, explain: "had finished." },
       { q: "He told me he ___ to Paris.", options: ["had been","has been","was","is"], correct: 0, explain: "had been." },
       { q: "When I arrived, she ___.", options: ["had already left","already left","has left","leaves"], correct: 0, explain: "had already left." },
-      { q: "___ you ___ the book before the lesson?", options: ["Had / read","Have / read","Did / read","Are / reading"], correct: 0, explain: "Had you read...?" },
+      { q: "___ you ___ the book before the lesson?", options: ["Had / read","Have / read","Did / read","Are / reading"], correct: 0, explain: "Had you read?" },
       { q: "I ___ (not/see) him before that day.", options: ["hadn't seen","didn't see","haven't seen","don't see"], correct: 0, explain: "hadn't seen." },
       { q: "They ___ the project by Friday.", options: ["had finished","finished","have finished","finish"], correct: 0, explain: "by Friday → had finished." },
       { q: "After she ___, she went out.", options: ["had eaten","ate","has eaten","eats"], correct: 0, explain: "after + Past Perfect." },
@@ -816,29 +1011,35 @@ const TENSES = [
     ],
     advanced: [
       { type: 'input', q: 'By the time we arrived, the concert ___ (start).', answers: ['had started'], explain: 'had + started.' },
-      { type: 'reorder', hint: 'Он сказал, что уже читал эту книгу.', words: ['He','said','he','had','already','read','this','book'], explain: 'He said he had already read this book.' },
+      { type: 'reorder', hint: 'He said he had already read this book.', words: ['He','said','he','had','already','read','this','book'], explain: 'He said he had already read this book.' },
       { type: 'input', q: "She ___ (not/finish) her homework before dinner.", answers: ["hadn't finished"], explain: "hadn't + finished." },
-      { type: 'reorder', hint: 'После того как они ушли, мы легли спать.', words: ['After','they','had','left','we','went','to','bed'], explain: 'After they had left, we went to bed.' },
+      { type: 'reorder', hint: 'After they had left, we went to bed.', words: ['After','they','had','left','we','went','to','bed'], explain: 'After they had left, we went to bed.' },
       { type: 'input', q: 'I ___ (see) the film before that day.', answers: ['had seen'], explain: 'had + seen.' }
     ]
   },
   {
     id: 'past-perfect-continuous', name: 'Past Perfect Continuous', zone: 'past', type: 'perfect-continuous',
-    theory: `
-      <h2>Past Perfect Continuous — предпрошедшее длительное</h2>
-      <p>Показывает <b>длительное действие, которое продолжалось до определённого момента в прошлом</b>.</p>
-      <h3>1. Как образуется</h3>
+    theory: T(`
+      <h2>Past Perfect Continuous</h2>
+      <p>Длительное действие, которое продолжалось до момента в прошлом.</p>
+      <h3>1. Формула</h3>
       <div class="formula">had been + V-ing</div>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>Длительность до момента в прошлом:</b> She had been waiting for 2 hours before he came.</li>
-        <li><b>Причина видимого результата:</b> The ground was wet — it had been raining.</li>
-        <li><b>С how long / for / since в прошлом:</b> How long had you been working there before you left?</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
+      <h3>2. Когда</h3>
+      <ul><li>Длительность до момента: <i>She had been waiting for 2 hours before he came.</i></li>
+      <li>Причина результата: <i>The ground was wet — it had been raining.</i></li></ul>
+      <h3>3. Маркеры</h3>
       <div class="example"><b>for, since, how long, before, when, all day</b></div>
-      <div class="tip"><b>Отличие от Past Perfect:</b> Past Perfect — результат (had done), Past Perfect Continuous — процесс (had been doing).</div>
-    `,
+    `, `
+      <h2>Past Perfect Continuous</h2>
+      <p>Duration up to a past moment.</p>
+      <h3>1. Form</h3>
+      <div class="formula">had been + V-ing</div>
+      <h3>2. When</h3>
+      <ul><li>Duration until a point: <i>She had been waiting for 2 hours before he came.</i></li>
+      <li>Cause of result: <i>The ground was wet — it had been raining.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>for, since, how long, before, when</b></div>
+    `),
     basic: [
       { q: "She ___ for two hours before he came.", options: ["had been waiting","was waiting","has been waiting","waited"], correct: 0, explain: "had been + waiting." },
       { q: "They ___ all day before the boss arrived.", options: ["had been working","worked","has been working","work"], correct: 0, explain: "had been working." },
@@ -853,144 +1054,151 @@ const TENSES = [
     ],
     advanced: [
       { type: 'input', q: 'They ___ (wait) for hours before the plane landed.', answers: ['had been waiting'], explain: 'had been + waiting.' },
-      { type: 'reorder', hint: 'Она работала здесь два года, до того как ушла.', words: ['She','had','been','working','here','for','two','years','before','she','left'], explain: 'She had been working here for two years before she left.' },
+      { type: 'reorder', hint: 'She had been working here for two years before she left.', words: ['She','had','been','working','here','for','two','years','before','she','left'], explain: 'She had been working here for two years before she left.' },
       { type: 'input', q: 'I ___ (study) for 3 hours when he called.', answers: ['had been studying'], explain: 'had been + studying.' },
-      { type: 'reorder', hint: 'Он играл в футбол уже час, когда пошёл дождь.', words: ['He','had','been','playing','football','for','an','hour','when','it','started','to','rain'], explain: 'He had been playing football for an hour when it started to rain.' },
+      { type: 'reorder', hint: 'He had been playing football for an hour when it started to rain.', words: ['He','had','been','playing','football','for','an','hour','when','it','started','to','rain'], explain: 'He had been playing football for an hour when it started to rain.' },
       { type: 'input', q: "She ___ (not/feel) well for days before the exam.", answers: ["hadn't been feeling"], explain: "hadn't been + feeling." }
     ]
   },
 
-  /* ==================== PRESENT ==================== */
+  /* ============ PRESENT ============ */
   {
     id: 'present-simple', name: 'Present Simple', zone: 'present', type: 'simple',
-    theory: `
+    theory: T(`
       <h2>Present Simple — настоящее простое</h2>
-      <p><b>Present Simple</b> — регулярное действие, привычка, факт или общеизвестная истина.</p>
-      <h3>1. Как образуется</h3>
-      <div class="formula">V (базовая) &nbsp;|&nbsp; для he / she / it → V + s / es</div>
+      <p>Регулярное действие, привычка, факт или общеизвестная истина.</p>
+      <h3>1. Формула</h3>
+      <div class="formula">V | для he/she/it → V + s / es</div>
       <table>
         <tr><th>Местоимение</th><th>Утв.</th><th>Отриц.</th><th>Вопрос</th></tr>
         <tr><td>I / You / We / They</td><td>I work.</td><td>I don't work.</td><td>Do I work?</td></tr>
         <tr><td>He / She / It</td><td>He works.</td><td>He doesn't work.</td><td>Does he work?</td></tr>
       </table>
-      <h3>2. Правила -s / -es</h3>
-      <ul>
-        <li><b>+s</b>: work → works</li>
-        <li>после -s, -ss, -sh, -ch, -x, -o → <b>+es</b>: go → goes, watch → watches</li>
-        <li>согл. + y → <b>-ies</b>: study → studies</li>
-        <li>гласн. + y → <b>+s</b>: play → plays</li>
-        <li>исключения: have → has, be → am/is/are</li>
-      </ul>
-      <h3>3. Когда используется</h3>
-      <ul>
-        <li><b>Регулярные действия:</b> I go to school every day.</li>
-        <li><b>Факты и истины:</b> Water boils at 100°C.</li>
-        <li><b>Постоянные ситуации:</b> She lives in Moscow.</li>
-        <li><b>Расписания:</b> The train leaves at 6 pm.</li>
-      </ul>
-      <h3>4. Слова-маркеры</h3>
-      <div class="example"><b>always, usually, often, sometimes, rarely, never, every day, on Mondays, once a week</b></div>
-    `,
+      <h3>2. Когда</h3>
+      <ul><li>Регулярные действия: <i>I go to school every day.</i></li>
+      <li>Факты: <i>Water boils at 100°C.</i></li>
+      <li>Расписания: <i>The train leaves at 6 pm.</i></li></ul>
+      <h3>3. Маркеры</h3>
+      <div class="example"><b>always, usually, often, sometimes, never, every day, on Mondays</b></div>
+    `, `
+      <h2>Present Simple</h2>
+      <p>Regular action, habit, fact or general truth.</p>
+      <h3>1. Form</h3>
+      <div class="formula">V | he/she/it → V + s / es</div>
+      <table>
+        <tr><th>Pronoun</th><th>+</th><th>−</th><th>?</th></tr>
+        <tr><td>I / You / We / They</td><td>I work.</td><td>I don't work.</td><td>Do I work?</td></tr>
+        <tr><td>He / She / It</td><td>He works.</td><td>He doesn't work.</td><td>Does he work?</td></tr>
+      </table>
+      <h3>2. When</h3>
+      <ul><li>Regular actions: <i>I go to school every day.</i></li>
+      <li>Facts: <i>Water boils at 100°C.</i></li>
+      <li>Timetables: <i>The train leaves at 6 pm.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>always, usually, often, sometimes, never, every day</b></div>
+    `),
     basic: [
       { q: "She ___ to school every day.", options: ["go","goes","is going","going"], correct: 1, explain: "she → goes." },
       { q: "___ you like coffee?", options: ["Do","Does","Are","Is"], correct: 0, explain: "You → Do." },
       { q: "He ___ not work on Sundays.", options: ["do","is","does","are"], correct: 2, explain: "He → doesn't work." },
       { q: "Water ___ at 100°C.", options: ["is boiling","boils","boil","boiling"], correct: 1, explain: "boils." },
       { q: "He usually ___ TV in the evening.", options: ["watch","watches","is watching","watching"], correct: 1, explain: "watch → watches." },
-      { q: "The train ___ at 6 pm tomorrow.", options: ["is leaving","leave","leaves","left"], correct: 2, explain: "Расписание → leaves." },
+      { q: "The train ___ at 6 pm tomorrow.", options: ["is leaving","leave","leaves","left"], correct: 2, explain: "Timetable → leaves." },
       { q: "My sister ___ in a hospital.", options: ["work","working","is work","works"], correct: 3, explain: "works." },
-      { q: "Какое предложение ВЕРНО?", options: ["She don't like apples.","She doesn't likes apples.","She doesn't like apples.","She not like apples."], correct: 2, explain: "doesn't + V1." },
-      { q: "Какой маркер у Present Simple?", options: ["now","at the moment","every day","Look!"], correct: 2, explain: "«every day»." },
-      { q: "Что означает Present Simple?", options: ["Сейчас","Регулярное / привычка","Прошлое","Планы"], correct: 1, explain: "Привычки, факты." }
+      { q: "Which sentence is CORRECT?", options: ["She don't like apples.","She doesn't likes apples.","She doesn't like apples.","She not like apples."], correct: 2, explain: "doesn't + V1." },
+      { q: "Which marker belongs to Present Simple?", options: ["now","at the moment","every day","Look!"], correct: 2, explain: "«every day»." },
+      { q: "What does Present Simple mean?", options: ["Now","Regular / habit","Past","Plans"], correct: 1, explain: "Habits and facts." }
     ],
     advanced: [
       { type: 'input', q: 'She ___ (go) to school every day.', answers: ['goes'], explain: 'she → goes.' },
-      { type: 'reorder', hint: 'Он обычно пьёт кофе утром.', words: ['He','usually','drinks','coffee','in','the','morning'], explain: 'He usually drinks coffee in the morning.' },
+      { type: 'reorder', hint: 'He usually drinks coffee in the morning.', words: ['He','usually','drinks','coffee','in','the','morning'], explain: 'He usually drinks coffee in the morning.' },
       { type: 'input', q: 'Water ___ (boil) at 100°C.', answers: ['boils'], explain: 'boils.' },
-      { type: 'reorder', hint: 'Они не смотрят ТВ по воскресеньям.', words: ["They","don't",'watch','TV','on','Sundays'], explain: "They don't watch TV on Sundays." },
+      { type: 'reorder', hint: "They don't watch TV on Sundays.", words: ["They","don't",'watch','TV','on','Sundays'], explain: "They don't watch TV on Sundays." },
       { type: 'input', q: 'My sister ___ (study) at university.', answers: ['studies'], explain: 'study → studies.' }
     ]
   },
   {
     id: 'present-continuous', name: 'Present Continuous', zone: 'present', type: 'continuous',
-    theory: `
+    theory: T(`
       <h2>Present Continuous — настоящее длительное</h2>
-      <p><b>Present Continuous</b> — действие прямо сейчас, в момент речи, или временная ситуация.</p>
-      <h3>1. Как образуется</h3>
-      <div class="formula">to be (am / is / are) + V-ing</div>
-      <table>
-        <tr><th>Местоимение</th><th>to be</th><th>Пример</th></tr>
-        <tr><td>I</td><td>am</td><td>I am reading.</td></tr>
-        <tr><td>He / She / It</td><td>is</td><td>He is reading.</td></tr>
-        <tr><td>You / We / They</td><td>are</td><td>They are reading.</td></tr>
-      </table>
-      <h3>2. Правила добавления -ing</h3>
-      <ul>
-        <li><b>-ing</b>: read → reading</li>
-        <li>немая -e отбрасывается: write → writing</li>
-        <li>согл.+гласн.+согл. → удвоение: run → running</li>
-        <li>-ie → -y: lie → lying</li>
-      </ul>
-      <h3>3. Когда используется</h3>
-      <ul>
-        <li><b>Прямо сейчас:</b> What are you doing? — I am watching TV.</li>
-        <li><b>Период в настоящем:</b> I am reading a good book these days.</li>
-        <li><b>Запланированное будущее:</b> I am meeting my friends tomorrow.</li>
-        <li><b>Раздражение с always:</b> He is always losing his keys!</li>
-      </ul>
-      <h3>4. Глаголы состояния (не используются в Continuous)</h3>
-      <p>like, love, hate, want, need, know, understand, believe, remember, forget, have (=иметь), own, belong, see, hear, seem, cost, mean.</p>
-      <div class="tip"><b>Важно!</b> Некоторые глаголы меняют значение: I <b>think</b> it's good (считаю, PS) → I <b>am thinking</b> about it (обдумываю, PC).</div>
-    `,
+      <p>Действие прямо сейчас или временная ситуация.</p>
+      <h3>1. Формула</h3>
+      <div class="formula">am / is / are + V-ing</div>
+      <h3>2. Когда</h3>
+      <ul><li>Прямо сейчас: <i>I am watching TV.</i></li>
+      <li>Временная ситуация: <i>She is working in Moscow this week.</i></li>
+      <li>Запланированное будущее: <i>I am meeting my friends tomorrow.</i></li>
+      <li>Раздражение с always: <i>He is always losing his keys!</i></li></ul>
+      <h3>3. Маркеры</h3>
+      <div class="example"><b>now, at the moment, currently, Look!, Listen!</b></div>
+      <div class="tip"><b>State verbs</b> (like, love, know, want, need) обычно НЕ используются в Continuous.</div>
+    `, `
+      <h2>Present Continuous</h2>
+      <p>Action happening right now or temporary situation.</p>
+      <h3>1. Form</h3>
+      <div class="formula">am / is / are + V-ing</div>
+      <h3>2. When</h3>
+      <ul><li>Right now: <i>I am watching TV.</i></li>
+      <li>Temporary: <i>She is working in Moscow this week.</i></li>
+      <li>Planned future: <i>I am meeting my friends tomorrow.</i></li>
+      <li>Annoyance with always: <i>He is always losing his keys!</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>now, at the moment, currently, Look!, Listen!</b></div>
+      <div class="tip"><b>State verbs</b> (like, love, know, want, need) are usually NOT used in Continuous.</div>
+    `),
     basic: [
       { q: "She ___ a book right now.", options: ["reads","is reading","read","reading"], correct: 1, explain: "is + reading." },
       { q: "___ they ___ TV at the moment?", options: ["Do / watch","Are / watching","Is / watching","Are / watch"], correct: 1, explain: "are + watching." },
       { q: "I ___ my homework at present.", options: ["am doing","do","is doing","does"], correct: 0, explain: "am + doing." },
       { q: "Look! The cat ___ on the sofa.", options: ["sleeps","is sleeping","sleep","are sleeping"], correct: 1, explain: "is sleeping." },
       { q: "We ___ to the cinema tonight.", options: ["go","are going","is going","goes"], correct: 1, explain: "are going." },
-      { q: "Какое предложение ВЕРНО?", options: ["He is runing.","He is running.","He is run.","He running."], correct: 1, explain: "run → running." },
-      { q: "Где НЕЛЬЗЯ использовать Present Continuous?", options: ["She is reading now.","I am loving this pizza.","They are playing football.","We are studying English."], correct: 1, explain: "«love» — state verb." },
+      { q: "Which sentence is CORRECT?", options: ["He is runing.","He is running.","He is run.","He running."], correct: 1, explain: "run → running." },
+      { q: "Where can you NOT use Present Continuous?", options: ["She is reading now.","I am loving this pizza.","They are playing football.","We are studying English."], correct: 1, explain: "«love» is a state verb." },
       { q: "The weather ___ colder these days.", options: ["get","gets","is getting","getting"], correct: 2, explain: "is getting." },
-      { q: "He ___ his keys! (раздражение)", options: ["always loses","is always losing","always is losing","always lose"], correct: 1, explain: "always + Continuous." },
-      { q: "Что означает Present Continuous?", options: ["Прошлое","Сейчас / временно","Привычка","Далёкое будущее"], correct: 1, explain: "Сейчас / временно / планы." }
+      { q: "He ___ his keys! (annoyance)", options: ["always loses","is always losing","always is losing","always lose"], correct: 1, explain: "always + Continuous." },
+      { q: "What does Present Continuous mean?", options: ["Past","Now / temporary","Habit","Far future"], correct: 1, explain: "Now / temporary / plans." }
     ],
     advanced: [
       { type: 'input', q: 'She ___ (read) a book right now.', answers: ['is reading'], explain: 'is + reading.' },
-      { type: 'reorder', hint: 'Она сейчас читает книгу.', words: ['She','is','reading','a','book','now'], explain: 'She is reading a book now.' },
+      { type: 'reorder', hint: 'She is reading a book now.', words: ['She','is','reading','a','book','now'], explain: 'She is reading a book now.' },
       { type: 'input', q: 'Look! They ___ (play) football in the yard.', answers: ['are playing'], explain: 'are + playing.' },
-      { type: 'reorder', hint: 'Я изучаю английский в данный момент.', words: ['I','am','studying','English','at','the','moment'], explain: 'I am studying English at the moment.' },
+      { type: 'reorder', hint: 'I am studying English at the moment.', words: ['I','am','studying','English','at','the','moment'], explain: 'I am studying English at the moment.' },
       { type: 'input', q: 'The weather ___ (get) colder these days.', answers: ['is getting'], explain: 'is getting.' }
     ]
   },
   {
     id: 'present-perfect', name: 'Present Perfect', zone: 'present', type: 'perfect',
-    theory: `
+    theory: T(`
       <h2>Present Perfect — настоящее совершённое</h2>
-      <p>Связывает <b>прошлое с настоящим</b>: действие уже произошло, но результат важен сейчас, или действие продолжается до сих пор.</p>
-      <h3>1. Как образуется</h3>
-      <div class="formula">have / has + V3 (past participle)</div>
-      <table>
-        <tr><th>Местоимение</th><th>Форма</th><th>Пример</th></tr>
-        <tr><td>I / You / We / They</td><td>have + V3</td><td>I have finished.</td></tr>
-        <tr><td>He / She / It</td><td>has + V3</td><td>She has finished.</td></tr>
-      </table>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>Результат сейчас:</b> I have lost my keys. (и сейчас их нет)</li>
-        <li><b>Опыт в жизни:</b> I have been to Paris.</li>
-        <li><b>Незавершённый период:</b> I have read 3 books this month.</li>
-        <li><b>С since / for:</b> I have lived here for 5 years.</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
+      <p>Связывает прошлое с настоящим: результат важен сейчас.</p>
+      <h3>1. Формула</h3>
+      <div class="formula">have / has + V3</div>
+      <h3>2. Когда</h3>
+      <ul><li>Результат сейчас: <i>I have lost my keys.</i></li>
+      <li>Опыт: <i>I have been to Paris.</i></li>
+      <li>С since / for: <i>I have lived here for 5 years.</i></li></ul>
+      <h3>3. Маркеры</h3>
       <div class="example"><b>just, already, yet, ever, never, since, for, this week, so far</b></div>
-      <div class="tip"><b>Сравнение:</b> Past Simple — конкретное время (<i>I saw him yesterday</i>). Present Perfect — без времени, важен результат (<i>I have seen him</i>).</div>
-    `,
+      <div class="tip"><b>vs Past Simple:</b> PS — конкретное время (<i>I saw him yesterday</i>), PP — без времени, важен результат (<i>I have seen him</i>).</div>
+    `, `
+      <h2>Present Perfect</h2>
+      <p>Links past to present: result matters now.</p>
+      <h3>1. Form</h3>
+      <div class="formula">have / has + V3</div>
+      <h3>2. When</h3>
+      <ul><li>Result now: <i>I have lost my keys.</i></li>
+      <li>Experience: <i>I have been to Paris.</i></li>
+      <li>With since / for: <i>I have lived here for 5 years.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>just, already, yet, ever, never, since, for, this week</b></div>
+      <div class="tip"><b>vs Past Simple:</b> PS has a time marker (<i>I saw him yesterday</i>), PP has no time, result matters (<i>I have seen him</i>).</div>
+    `),
     basic: [
-      { q: "I ___ just ___ my homework.", options: ["have / finished","has / finished","am / finishing","did / finish"], correct: 0, explain: "I → have + V3." },
-      { q: "She ___ never ___ to Paris.", options: ["have / been","has / been","is / being","was / been"], correct: 1, explain: "She → has + been." },
-      { q: "___ you ever ___ sushi?", options: ["Have / eaten","Has / eaten","Did / eat","Are / eating"], correct: 0, explain: "Have you ever eaten...?" },
+      { q: "I ___ just ___ my homework.", options: ["have / finished","has / finished","am / finishing","did / finish"], correct: 0, explain: "have + V3." },
+      { q: "She ___ never ___ to Paris.", options: ["have / been","has / been","is / being","was / been"], correct: 1, explain: "has + been." },
+      { q: "___ you ever ___ sushi?", options: ["Have / eaten","Has / eaten","Did / eat","Are / eating"], correct: 0, explain: "Have you ever eaten?" },
       { q: "We ___ lived here since 2010.", options: ["have","has","are","were"], correct: 0, explain: "We → have." },
-      { q: "He ___ already ___ the letter.", options: ["have / sent","has / sent","is / sending","did / send"], correct: 1, explain: "He → has + sent." },
+      { q: "He ___ already ___ the letter.", options: ["have / sent","has / sent","is / sending","did / send"], correct: 1, explain: "has + sent." },
       { q: "They ___ (not/arrive) yet.", options: ["haven't arrived","hasn't arrived","didn't arrive","don't arrive"], correct: 0, explain: "haven't arrived." },
       { q: "How long ___ you ___ English?", options: ["have / studied","has / studied","did / study","are / studying"], correct: 0, explain: "have + S + V3." },
       { q: "I ___ (know) her for 5 years.", options: ["have known","know","knew","am knowing"], correct: 0, explain: "have known." },
@@ -999,29 +1207,37 @@ const TENSES = [
     ],
     advanced: [
       { type: 'input', q: 'I ___ (finish) the report already.', answers: ['have finished'], explain: 'have + finished.' },
-      { type: 'reorder', hint: 'Она никогда не была в Париже.', words: ['She','has','never','been','to','Paris'], explain: 'She has never been to Paris.' },
+      { type: 'reorder', hint: 'She has never been to Paris.', words: ['She','has','never','been','to','Paris'], explain: 'She has never been to Paris.' },
       { type: 'input', q: 'We ___ (live) here since 2010.', answers: ['have lived'], explain: 'have + lived.' },
-      { type: 'reorder', hint: 'Ты когда-нибудь пробовал суши?', words: ['Have','you','ever','tried','sushi'], explain: 'Have you ever tried sushi?' },
+      { type: 'reorder', hint: 'Have you ever tried sushi?', words: ['Have','you','ever','tried','sushi'], explain: 'Have you ever tried sushi?' },
       { type: 'input', q: "They ___ (not/arrive) yet.", answers: ["haven't arrived"], explain: "haven't + arrived." }
     ]
   },
   {
     id: 'present-perfect-continuous', name: 'Present Perfect Continuous', zone: 'present', type: 'perfect-continuous',
-    theory: `
-      <h2>Present Perfect Continuous — настоящее совершённое длительное</h2>
-      <p>Подчёркивает <b>длительность действия</b>, которое началось в прошлом и продолжается до сих пор (или только что закончилось).</p>
-      <h3>1. Как образуется</h3>
+    theory: T(`
+      <h2>Present Perfect Continuous</h2>
+      <p>Длительность действия, которое началось в прошлом и продолжается до сих пор.</p>
+      <h3>1. Формула</h3>
       <div class="formula">have / has been + V-ing</div>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>Действие продолжается:</b> I have been studying English for 3 years.</li>
-        <li><b>Длительность с for / since:</b> She has been working here since 2018.</li>
-        <li><b>Объяснение результата:</b> I'm tired — I have been running.</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
+      <h3>2. Когда</h3>
+      <ul><li>Продолжается: <i>I have been studying English for 3 years.</i></li>
+      <li>С for / since: <i>She has been working here since 2018.</i></li>
+      <li>Объяснение результата: <i>I'm tired — I have been running.</i></li></ul>
+      <h3>3. Маркеры</h3>
       <div class="example"><b>for, since, how long, all day, lately, recently</b></div>
-      <div class="tip"><b>Отличие от Present Perfect:</b> PPC подчёркивает <b>процесс</b>, PP — <b>результат</b>.</div>
-    `,
+    `, `
+      <h2>Present Perfect Continuous</h2>
+      <p>Duration of action started in the past and continuing now.</p>
+      <h3>1. Form</h3>
+      <div class="formula">have / has been + V-ing</div>
+      <h3>2. When</h3>
+      <ul><li>Still continuing: <i>I have been studying English for 3 years.</i></li>
+      <li>With for / since: <i>She has been working here since 2018.</i></li>
+      <li>Cause of result: <i>I'm tired — I have been running.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>for, since, how long, all day, lately</b></div>
+    `),
     basic: [
       { q: "I ___ (study) English for 3 years.", options: ["have been studying","have studied","study","studied"], correct: 0, explain: "have been + studying." },
       { q: "She ___ (work) here since 2018.", options: ["has been working","has worked","works","worked"], correct: 0, explain: "has been + working." },
@@ -1036,38 +1252,45 @@ const TENSES = [
     ],
     advanced: [
       { type: 'input', q: 'She ___ (study) at the university for 2 years.', answers: ['has been studying'], explain: 'has been + studying.' },
-      { type: 'reorder', hint: 'Я жду тебя уже час.', words: ['I','have','been','waiting','for','you','for','an','hour'], explain: 'I have been waiting for you for an hour.' },
+      { type: 'reorder', hint: 'I have been waiting for you for an hour.', words: ['I','have','been','waiting','for','you','for','an','hour'], explain: 'I have been waiting for you for an hour.' },
       { type: 'input', q: 'It ___ (rain) all day.', answers: ['has been raining'], explain: 'has been + raining.' },
-      { type: 'reorder', hint: 'Он работает здесь с 2018 года.', words: ['He','has','been','working','here','since','2018'], explain: 'He has been working here since 2018.' },
+      { type: 'reorder', hint: 'He has been working here since 2018.', words: ['He','has','been','working','here','since','2018'], explain: 'He has been working here since 2018.' },
       { type: 'input', q: "We ___ (not/sleep) well lately.", answers: ["haven't been sleeping"], explain: "haven't been + sleeping." }
     ]
   },
 
-  /* ==================== FUTURE ==================== */
+  /* ============ FUTURE ============ */
   {
     id: 'future-simple', name: 'Future Simple', zone: 'future', type: 'simple',
-    theory: `
+    theory: T(`
       <h2>Future Simple — будущее простое</h2>
-      <p>Действие в будущем: предсказание, спонтанное решение, обещание или предложение.</p>
-      <h3>1. Как образуется</h3>
-      <div class="formula">will + V1 (для всех лиц)</div>
+      <p>Предсказание, спонтанное решение, обещание или предложение.</p>
+      <h3>1. Формула</h3>
+      <div class="formula">will + V1</div>
       <table>
         <tr><th>Тип</th><th>Форма</th><th>Пример</th></tr>
         <tr><td>Утв.</td><td>will + V</td><td>I will go.</td></tr>
         <tr><td>Отриц.</td><td>won't + V</td><td>I won't go.</td></tr>
         <tr><td>Вопрос</td><td>Will + S + V?</td><td>Will you go?</td></tr>
       </table>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>Спонтанное решение:</b> I'm tired. I'll go to bed.</li>
-        <li><b>Предсказание:</b> It will rain tomorrow.</li>
-        <li><b>Обещание:</b> I will help you.</li>
-        <li><b>Просьба:</b> Will you help me?</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
+      <h3>2. Когда</h3>
+      <ul><li>Спонтанное: <i>I'll go to bed.</i></li>
+      <li>Предсказание: <i>It will rain tomorrow.</i></li>
+      <li>Обещание: <i>I will help you.</i></li></ul>
+      <h3>3. Маркеры</h3>
       <div class="example"><b>tomorrow, next week, in 2030, soon, later, I think, probably, maybe</b></div>
-      <div class="tip"><b>will vs going to:</b> will — спонтанное, going to — заранее запланировано. После will — V1 без to!</div>
-    `,
+    `, `
+      <h2>Future Simple</h2>
+      <p>Prediction, spontaneous decision, promise or offer.</p>
+      <h3>1. Form</h3>
+      <div class="formula">will + V1</div>
+      <h3>2. When</h3>
+      <ul><li>Spontaneous: <i>I'll go to bed.</i></li>
+      <li>Prediction: <i>It will rain tomorrow.</i></li>
+      <li>Promise: <i>I will help you.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>tomorrow, next week, in 2030, soon, later, I think, probably</b></div>
+    `),
     basic: [
       { q: "I think it ___ tomorrow.", options: ["rains","will rain","rained","is raining"], correct: 1, explain: "will + V1." },
       { q: "___ you help me, please?", options: ["Do","Will","Are","Did"], correct: 1, explain: "Will you...?" },
@@ -1076,42 +1299,48 @@ const TENSES = [
       { q: "I promise I ___ you.", options: ["help","will help","helped","helps"], correct: 1, explain: "will help." },
       { q: "What ___ you do tomorrow?", options: ["do","will","did","are"], correct: 1, explain: "will + S + V1." },
       { q: "Maybe she ___ come later.", options: ["will","would","does","is"], correct: 0, explain: "will + V1." },
-      { q: "Какое предложение ВЕРНО?", options: ["I will to go.","I will go.","I will going.","I will goes."], correct: 1, explain: "После will — V1." },
+      { q: "Which sentence is CORRECT?", options: ["I will to go.","I will go.","I will going.","I will goes."], correct: 1, explain: "After will — V1." },
       { q: "___ they be at home tomorrow?", options: ["Will","Do","Are","Did"], correct: 0, explain: "Will + S + V?" },
       { q: "I'm tired. I think I ___ to bed.", options: ["go","will go","went","am going"], correct: 1, explain: "will go." }
     ],
     advanced: [
       { type: 'input', q: 'I think it ___ (rain) tomorrow.', answers: ['will rain'], explain: 'will + rain.' },
-      { type: 'reorder', hint: 'Я помогу тебе завтра.', words: ['I','will','help','you','tomorrow'], explain: 'I will help you tomorrow.' },
+      { type: 'reorder', hint: 'I will help you tomorrow.', words: ['I','will','help','you','tomorrow'], explain: 'I will help you tomorrow.' },
       { type: 'input', q: 'We ___ (visit) them next Monday.', answers: ['will visit'], explain: 'will + visit.' },
-      { type: 'reorder', hint: 'Они будут дома завтра.', words: ['They','will','be','at','home','tomorrow'], explain: 'They will be at home tomorrow.' },
+      { type: 'reorder', hint: 'They will be at home tomorrow.', words: ['They','will','be','at','home','tomorrow'], explain: 'They will be at home tomorrow.' },
       { type: 'input', q: 'Maybe she ___ (call) us later.', answers: ['will call'], explain: 'will + call.' }
     ]
   },
   {
     id: 'future-continuous', name: 'Future Continuous', zone: 'future', type: 'continuous',
-    theory: `
+    theory: T(`
       <h2>Future Continuous — будущее длительное</h2>
-      <p>Действие <b>в процессе</b> в определённый момент будущего.</p>
-      <h3>1. Как образуется</h3>
+      <p>Действие в процессе в определённый момент будущего.</p>
+      <h3>1. Формула</h3>
       <div class="formula">will be + V-ing</div>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>Процесс в момент будущего:</b> At 5 pm tomorrow I will be working.</li>
-        <li><b>Действие будет длиться:</b> This time tomorrow I'll be flying to Paris.</li>
-        <li><b>Вежливый вопрос:</b> Will you be using the car tonight?</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
-      <div class="example"><b>at 5 pm tomorrow, this time tomorrow, all day tomorrow, in an hour</b></div>
-      <div class="tip"><b>Вежливость:</b> Will you be using...? звучит мягче, чем Are you going to use...?</div>
-    `,
+      <h3>2. Когда</h3>
+      <ul><li>Процесс в будущем: <i>At 5 pm tomorrow I will be working.</i></li>
+      <li>Вежливый вопрос: <i>Will you be using the car tonight?</i></li></ul>
+      <h3>3. Маркеры</h3>
+      <div class="example"><b>at 5 pm tomorrow, this time tomorrow, all day tomorrow</b></div>
+    `, `
+      <h2>Future Continuous</h2>
+      <p>Action in progress at a specific future moment.</p>
+      <h3>1. Form</h3>
+      <div class="formula">will be + V-ing</div>
+      <h3>2. When</h3>
+      <ul><li>Future process: <i>At 5 pm tomorrow I will be working.</i></li>
+      <li>Polite question: <i>Will you be using the car tonight?</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>at 5 pm tomorrow, this time tomorrow, all day tomorrow</b></div>
+    `),
     basic: [
       { q: "At 5 pm tomorrow I ___ my homework.", options: ["do","will be doing","will do","did"], correct: 1, explain: "will be + doing." },
       { q: "This time tomorrow we ___ to Paris.", options: ["fly","will be flying","will fly","flew"], correct: 1, explain: "will be + flying." },
       { q: "She ___ at 8 pm tonight.", options: ["works","will be working","will work","worked"], correct: 1, explain: "will be + working." },
       { q: "They ___ dinner when we arrive.", options: ["will have","will be having","have","are having"], correct: 1, explain: "will be + having." },
       { q: "What ___ you ___ at 10 am tomorrow?", options: ["will / do","will / be doing","do / doing","are / doing"], correct: 1, explain: "will + S + be + V-ing." },
-      { q: "Какое предложение ВЕРНО?", options: ["I will be read.","I will be reading.","I will reading.","I will be readed."], correct: 1, explain: "will be + V-ing." },
+      { q: "Which sentence is CORRECT?", options: ["I will be read.","I will be reading.","I will reading.","I will be readed."], correct: 1, explain: "will be + V-ing." },
       { q: "Don't call at 7 — I ___ dinner.", options: ["have","will be having","will have","had"], correct: 1, explain: "will be + having." },
       { q: "He ___ his car at 3 pm tomorrow.", options: ["washes","will be washing","will wash","washed"], correct: 1, explain: "will be + washing." },
       { q: "___ you ___ the car tonight?", options: ["Will / be using","Will / using","Do / use","Are / using"], correct: 0, explain: "Will + S + be + V-ing?" },
@@ -1119,34 +1348,33 @@ const TENSES = [
     ],
     advanced: [
       { type: 'input', q: 'At 5 pm tomorrow I ___ (do) my homework.', answers: ['will be doing'], explain: 'will be + doing.' },
-      { type: 'reorder', hint: 'Завтра в это время мы будем лететь в Париж.', words: ['This','time','tomorrow','we','will','be','flying','to','Paris'], explain: 'This time tomorrow we will be flying to Paris.' },
+      { type: 'reorder', hint: 'This time tomorrow we will be flying to Paris.', words: ['This','time','tomorrow','we','will','be','flying','to','Paris'], explain: 'This time tomorrow we will be flying to Paris.' },
       { type: 'input', q: 'She ___ (work) at 8 pm tonight.', answers: ['will be working'], explain: 'will be + working.' },
-      { type: 'reorder', hint: 'Не звони в 7, я буду ужинать.', words: ["Don't",'call','at','7','I','will','be','having','dinner'], explain: "Don't call at 7, I will be having dinner." },
+      { type: 'reorder', hint: "Don't call at 7, I will be having dinner.", words: ["Don't",'call','at','7','I','will','be','having','dinner'], explain: "Don't call at 7, I will be having dinner." },
       { type: 'input', q: 'This time next week I ___ (relax) on the beach.', answers: ['will be relaxing'], explain: 'will be + relaxing.' }
     ]
   },
   {
     id: 'future-perfect', name: 'Future Perfect', zone: 'future', type: 'perfect',
-    theory: `
+    theory: T(`
       <h2>Future Perfect — будущее совершённое</h2>
-      <p>Действие <b>завершится к определённому моменту в будущем</b>.</p>
-      <h3>1. Как образуется</h3>
+      <p>Действие завершится к моменту в будущем.</p>
+      <h3>1. Формула</h3>
       <div class="formula">will have + V3</div>
-      <table>
-        <tr><th>Тип</th><th>Форма</th><th>Пример</th></tr>
-        <tr><td>Утв.</td><td>will have + V3</td><td>I will have finished.</td></tr>
-        <tr><td>Отриц.</td><td>won't have + V3</td><td>I won't have finished.</td></tr>
-        <tr><td>Вопрос</td><td>Will + S + have + V3?</td><td>Will you have finished?</td></tr>
-      </table>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>С by / by the time:</b> By 5 pm I will have finished the report.</li>
-        <li><b>К определённому сроку:</b> By next year they will have built the house.</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
-      <div class="example"><b>by, by the time, by then, before, by next week/month/year</b></div>
-      <div class="tip"><b>Отличие от Future Simple:</b> FS — что произойдёт, FP — что <b>уже завершится</b> к моменту.</div>
-    `,
+      <h3>2. Когда</h3>
+      <ul><li>С by / by the time: <i>By 5 pm I will have finished.</i></li></ul>
+      <h3>3. Маркеры</h3>
+      <div class="example"><b>by, by the time, by then, before, by next week</b></div>
+    `, `
+      <h2>Future Perfect</h2>
+      <p>Action will be completed by a future moment.</p>
+      <h3>1. Form</h3>
+      <div class="formula">will have + V3</div>
+      <h3>2. When</h3>
+      <ul><li>With by / by the time: <i>By 5 pm I will have finished.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>by, by the time, by then, by next week</b></div>
+    `),
     basic: [
       { q: "By 5 pm I ___ the report.", options: ["finish","will have finished","will finish","finished"], correct: 1, explain: "will have + V3." },
       { q: "She ___ by the time you arrive.", options: ["leaves","will have left","will leave","left"], correct: 1, explain: "will have + left." },
@@ -1161,28 +1389,33 @@ const TENSES = [
     ],
     advanced: [
       { type: 'input', q: 'By next summer I ___ (learn) Spanish.', answers: ['will have learned','will have learnt'], explain: 'will have + V3.' },
-      { type: 'reorder', hint: 'К 5 часам я закончу отчёт.', words: ['By','5',"o'clock",'I','will','have','finished','the','report'], explain: "By 5 o'clock I will have finished the report." },
+      { type: 'reorder', hint: "By 5 o'clock I will have finished the report.", words: ['By','5',"o'clock",'I','will','have','finished','the','report'], explain: "By 5 o'clock I will have finished the report." },
       { type: 'input', q: 'They ___ (arrive) by the time we get there.', answers: ['will have arrived'], explain: 'will have + arrived.' },
-      { type: 'reorder', hint: 'К концу года он напишет книгу.', words: ['By','the','end','of','the','year','he','will','have','written','a','book'], explain: 'By the end of the year he will have written a book.' },
+      { type: 'reorder', hint: 'By the end of the year he will have written a book.', words: ['By','the','end','of','the','year','he','will','have','written','a','book'], explain: 'By the end of the year he will have written a book.' },
       { type: 'input', q: "She ___ (not/finish) her work by 6 pm.", answers: ["won't have finished"], explain: "won't have + finished." }
     ]
   },
   {
     id: 'future-perfect-continuous', name: 'Future Perfect Continuous', zone: 'future', type: 'perfect-continuous',
-    theory: `
-      <h2>Future Perfect Continuous — будущее совершённое длительное</h2>
-      <p>Показывает, <b>как долго</b> будет длиться действие к определённому моменту в будущем.</p>
-      <h3>1. Как образуется</h3>
+    theory: T(`
+      <h2>Future Perfect Continuous</h2>
+      <p>Как долго будет длиться действие к моменту в будущем.</p>
+      <h3>1. Формула</h3>
       <div class="formula">will have been + V-ing</div>
-      <h3>2. Когда используется</h3>
-      <ul>
-        <li><b>Длительность до момента в будущем:</b> By 5 pm I will have been working for 8 hours.</li>
-        <li><b>С by / for / by the time:</b> In June they will have been living here for 10 years.</li>
-      </ul>
-      <h3>3. Слова-маркеры</h3>
-      <div class="example"><b>by, by the time, for, by next week/month/year, in ...</b></div>
-      <div class="tip"><b>Сравнение:</b> Future Perfect — <i>will have done</i> (результат), Future Perfect Continuous — <i>will have been doing</i> (процесс).</div>
-    `,
+      <h3>2. Когда</h3>
+      <ul><li>Длительность до момента: <i>By 5 pm I will have been working for 8 hours.</i></li></ul>
+      <h3>3. Маркеры</h3>
+      <div class="example"><b>by, by the time, for, by next week</b></div>
+    `, `
+      <h2>Future Perfect Continuous</h2>
+      <p>How long an action will have lasted by a future moment.</p>
+      <h3>1. Form</h3>
+      <div class="formula">will have been + V-ing</div>
+      <h3>2. When</h3>
+      <ul><li>Duration until a point: <i>By 5 pm I will have been working for 8 hours.</i></li></ul>
+      <h3>3. Markers</h3>
+      <div class="example"><b>by, by the time, for, by next week</b></div>
+    `),
     basic: [
       { q: "By 5 pm I ___ (work) for 8 hours.", options: ["will have been working","will work","will be working","worked"], correct: 0, explain: "will have been + working." },
       { q: "By next month she ___ (study) English for a year.", options: ["will have been studying","will study","will be studying","studied"], correct: 0, explain: "will have been + studying." },
@@ -1197,39 +1430,82 @@ const TENSES = [
     ],
     advanced: [
       { type: 'input', q: 'By next June I ___ (work) here for 5 years.', answers: ['will have been working'], explain: 'will have been + working.' },
-      { type: 'reorder', hint: 'К тому времени она будет учиться уже год.', words: ['By','that','time','she','will','have','been','studying','for','a','year'], explain: 'By that time she will have been studying for a year.' },
+      { type: 'reorder', hint: 'By that time she will have been studying for a year.', words: ['By','that','time','she','will','have','been','studying','for','a','year'], explain: 'By that time she will have been studying for a year.' },
       { type: 'input', q: 'In 2030 they ___ (live) in this city for 30 years.', answers: ['will have been living'], explain: 'will have been + living.' },
-      { type: 'reorder', hint: 'К моменту его прихода я буду ждать уже 2 часа.', words: ['By','the','time','he','comes','I','will','have','been','waiting','for','2','hours'], explain: 'By the time he comes I will have been waiting for 2 hours.' },
+      { type: 'reorder', hint: 'By the time he comes I will have been waiting for 2 hours.', words: ['By','the','time','he','comes','I','will','have','been','waiting','for','2','hours'], explain: 'By the time he comes I will have been waiting for 2 hours.' },
       { type: 'input', q: 'By the time she arrives, I ___ (wait) for 3 hours.', answers: ['will have been waiting'], explain: 'will have been + waiting.' }
     ]
   }
 ];
 
 /* =========================================================
-   ACHIEVEMENTS
+   IELTS DATA
+   ========================================================= */
+const IELTS_DATA = {
+  'ielts-tense-choice': [
+    { q: "By the time you receive this letter, I ___ for Europe.", options: ["will leave","will have left","will be leaving","am leaving"], correct: 1, explain: "By the time → Future Perfect: will have left." },
+    { q: "I wish I ___ harder when I was at school.", options: ["studied","had studied","would study","study"], correct: 1, explain: "wish + Past Perfect — сожаление о прошлом." },
+    { q: "This time next week I ___ on a beach in Bali.", options: ["will lie","will be lying","will have lain","lie"], correct: 1, explain: "This time next week → Future Continuous." },
+    { q: "It's high time we ___ something about this problem.", options: ["do","did","will do","have done"], correct: 1, explain: "it's high time + Past Simple (subjunctive)." },
+    { q: "Hardly ___ the room when the phone rang.", options: ["I had entered","had I entered","I entered","did I enter"], correct: 1, explain: "Hardly + inversion: had I entered..." },
+    { q: "She's been working here ___ she graduated.", options: ["since","for","when","after"], correct: 0, explain: "since + момент (she graduated)." },
+    { q: "This is the first time I ___ such a beautiful sunset.", options: ["see","have seen","saw","am seeing"], correct: 1, explain: "This is the first time + Present Perfect." },
+    { q: "By next July, they ___ married for 20 years.", options: ["will be","will have been","are","have been"], correct: 1, explain: "By + Future Perfect." },
+    { q: "The moment the sun ___, we started our journey.", options: ["rose","had risen","was rising","rises"], correct: 0, explain: "The moment + Past Simple — одномоментно." },
+    { q: "We ___ to the theatre last night when the power went out.", options: ["were going","went","had gone","had been going"], correct: 0, explain: "Контекст: процесс в момент — Past Continuous." }
+  ],
+  'ielts-error-correction': [
+    { q: "Choose the CORRECT sentence:", options: ["If I would have known, I'd have told you.","If I had known, I would have told you.","If I knew, I would have told you.","If I have known, I would tell you."], correct: 1, explain: "Third conditional: If + had + V3, would have + V3." },
+    { q: "Choose the CORRECT sentence:", options: ["When I will see him, I'll tell him.","When I see him, I'll tell him.","When I would see him, I'll tell him.","When I'm seeing him, I'll tell him."], correct: 1, explain: "После when / if не используется will в придаточном времени." },
+    { q: "Choose the CORRECT sentence:", options: ["I've been living here since 5 years.","I've been living here for 5 years.","I live here since 5 years.","I'm living here since 5 years."], correct: 1, explain: "for + промежуток; since + момент." },
+    { q: "Choose the CORRECT sentence:", options: ["She's been to Paris last year.","She went to Paris last year.","She has gone to Paris last year.","She is going to Paris last year."], correct: 1, explain: "С конкретным временем в прошлом → Past Simple." },
+    { q: "Choose the CORRECT sentence:", options: ["By the time we arrived, they left.","By the time we arrived, they had left.","By the time we arrived, they have left.","By the time we arrived, they were leaving already."], correct: 1, explain: "By the time + Past Simple → Past Perfect." },
+    { q: "Choose the CORRECT sentence:", options: ["I'm knowing the answer.","I know the answer.","I am knowing the answer now.","I have knowing the answer."], correct: 1, explain: "«know» — state verb, не в Continuous." },
+    { q: "Choose the CORRECT sentence:", options: ["The train leaves at 8 am tomorrow.","The train is leave at 8 am tomorrow.","The train leave at 8 am tomorrow.","The train leaving at 8 am tomorrow."], correct: 0, explain: "Расписание → Present Simple." },
+    { q: "Choose the CORRECT sentence:", options: ["She suggested that he goes home.","She suggested that he go home.","She suggested that he went home.","She suggested that he is going home."], correct: 1, explain: "suggest + (that) + subjunctive (go)." }
+  ],
+  'ielts-transformation': [
+    { type: 'input', q: 'By the time we get there, the film ___ (already/start).', answers: ['will have already started'], explain: 'Future Perfect: will have + V3.' },
+    { type: 'input', q: "I wish I ___ (not/say) that to her yesterday.", answers: ["hadn't said"], explain: "wish + Past Perfect." },
+    { type: 'input', q: 'It is the first time she ___ (drive) a car.', answers: ['has driven'], explain: 'It is the first time + Present Perfect.' },
+    { type: 'input', q: 'Hardly ___ (I/sit) down when the phone rang.', answers: ['had I sat'], explain: 'Inversion after hardly: had I sat.' },
+    { type: 'input', q: 'If only I ___ (listen) to your advice!', answers: ['had listened'], explain: 'If only + Past Perfect (past regret).' },
+    { type: 'reorder', hint: 'By this time next year, I will have been living here for a decade.', words: ['By','this','time','next','year','I','will','have','been','living','here','for','a','decade'], explain: 'By this time next year, I will have been living here for a decade.' },
+    { type: 'reorder', hint: 'No sooner had she arrived than it started to rain.', words: ['No','sooner','had','she','arrived','than','it','started','to','rain'], explain: 'No sooner had she arrived than it started to rain.' },
+    { type: 'reorder', hint: 'I had been waiting for hours before they finally showed up.', words: ['I','had','been','waiting','for','hours','before','they','finally','showed','up'], explain: 'I had been waiting for hours before they finally showed up.' }
+  ]
+};
+
+/* =========================================================
+   ACHIEVEMENTS (bilingual names/desc)
    ========================================================= */
 const ACHIEVEMENTS = [
-  { id: 'first_steps',   icon: '👶', name: 'Первые шаги',    desc: 'Завершить первый тест',              reward: 5 },
-  { id: 'perfect_basic', icon: '⭐', name: 'Отличник',        desc: '100% в базовом тесте',               reward: 15 },
-  { id: 'perfect_adv',   icon: '💎', name: 'Мастер',          desc: '100% в продвинутом тесте',           reward: 30 },
-  { id: 'perfect_exam',  icon: '🎖', name: 'Экзаменатор',     desc: '100% в любом экзамене',              reward: 40 },
-  { id: 'all_basic',     icon: '🎓', name: 'Полиглот',        desc: 'Все 12 базовых тестов',              reward: 100 },
-  { id: 'all_adv',       icon: '🧠', name: 'Гуру',            desc: 'Все 12 продвинутых тестов',          reward: 150 },
-  { id: 'all_exams',     icon: '🏁', name: 'Покоритель',      desc: 'Все 3 экзамена пройдены',            reward: 80 },
-  { id: 'perfect_all_basic', icon: '🏅', name: 'Перфекционист', desc: '100% во всех базовых тестах',      reward: 300 },
-  { id: 'perfect_all_adv',   icon: '👑', name: 'Легенда',      desc: '100% во всех продвинутых тестах',  reward: 500 },
-  { id: 'hundred',       icon: '💰', name: 'Копилка',         desc: '100 Фунтиков',                       reward: 25 },
-  { id: 'fivehundred',   icon: '🐷', name: 'Богач',           desc: '500 Фунтиков',                       reward: 75 },
-  { id: 'thousand',      icon: '💎', name: 'Миллионер',       desc: '1000 Фунтиков',                      reward: 100 },
-  { id: 'pig_master',    icon: '🐽', name: 'Повелитель Пятачков', desc: '2000 Фунтиков',                 reward: 300 },
-  { id: 'marathoner',    icon: '🏃', name: 'Марафонец',       desc: '100 отвеченных вопросов',            reward: 40 },
-  { id: 'super_marathon', icon: '🔥', name: 'Сверхмарафонец', desc: '300 отвеченных вопросов',            reward: 100 },
+  { id: 'first_steps', icon: '👶', name: T('Первые шаги','First steps'), desc: T('Завершить первый тест','Finish your first test'), reward: 5 },
+  { id: 'perfect_basic', icon: '⭐', name: T('Отличник','Star student'), desc: T('100% в базовом тесте','100% on a basic test'), reward: 15 },
+  { id: 'perfect_adv', icon: '💎', name: T('Мастер','Master'), desc: T('100% в продвинутом тесте','100% on an advanced test'), reward: 30 },
+  { id: 'perfect_exam', icon: '🎖', name: T('Экзаменатор','Examiner'), desc: T('100% в любом экзамене','100% on any exam'), reward: 40 },
+  { id: 'perfect_ielts', icon: '🎓', name: T('IELTS Pro','IELTS Pro'), desc: T('100% в IELTS-разделе','100% on an IELTS section'), reward: 60 },
+  { id: 'all_basic', icon: '🎓', name: T('Полиглот','Polyglot'), desc: T('Все 12 базовых тестов','All 12 basic tests'), reward: 100 },
+  { id: 'all_adv', icon: '🧠', name: T('Гуру','Guru'), desc: T('Все 12 продвинутых тестов','All 12 advanced tests'), reward: 150 },
+  { id: 'all_exams', icon: '🏁', name: T('Покоритель','Conqueror'), desc: T('Все экзамены пройдены','All exams completed'), reward: 80 },
+  { id: 'all_ielts', icon: '🏛', name: T('IELTS Champion','IELTS Champion'), desc: T('Все IELTS-разделы пройдены','All IELTS sections completed'), reward: 120 },
+  { id: 'perfect_all_basic', icon: '🏅', name: T('Перфекционист','Perfectionist'), desc: T('100% во всех базовых','100% in all basic tests'), reward: 300 },
+  { id: 'perfect_all_adv', icon: '👑', name: T('Легенда','Legend'), desc: T('100% во всех продвинутых','100% in all advanced tests'), reward: 500 },
+  { id: 'hundred', icon: '💰', name: T('Копилка','Piggy bank'), desc: T('100 Фунтиков','100 Funtiki'), reward: 25 },
+  { id: 'fivehundred', icon: '🐷', name: T('Богач','Rich pig'), desc: T('500 Фунтиков','500 Funtiki'), reward: 75 },
+  { id: 'thousand', icon: '💎', name: T('Миллионер','Millionaire'), desc: T('1000 Фунтиков','1000 Funtiki'), reward: 100 },
+  { id: 'pig_master', icon: '🐽', name: T('Повелитель Пятачков','Snout Master'), desc: T('2000 Фунтиков','2000 Funtiki'), reward: 300 },
+  { id: 'marathoner', icon: '🏃', name: T('Марафонец','Marathoner'), desc: T('100 отвеченных вопросов','100 questions answered'), reward: 40 },
+  { id: 'super_marathon', icon: '🔥', name: T('Сверхмарафонец','Ultra marathoner'), desc: T('300 отвеченных вопросов','300 questions answered'), reward: 100 },
 ];
+
+function achName(a) { return a.name[state.lang] || a.name.ru; }
+function achDesc(a) { return a.desc[state.lang] || a.desc.ru; }
 
 /* =========================================================
    HELPERS
    ========================================================= */
-function normalize(s) { return String(s).toLowerCase().trim().replace(/\s+/g, ' ').replace(/[.!?]+$/, ''); }
+function normalize(s) { return String(s).toLowerCase().trim().replace(/\s+/g, ' ').replace(/[.!?,;:]+$/, ''); }
 function shuffle(a) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
 function shuffleWords(words) {
   const a = [...words];
@@ -1298,7 +1574,7 @@ function showToast({ icon, title, desc, reward }) {
   setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 4500);
 }
 function showAchievementToast(a) {
-  showToast({ icon: a.icon, title: `🏆 ${a.name}`, desc: a.desc, reward: a.reward });
+  showToast({ icon: a.icon, title: `🏆 ${achName(a)}`, desc: achDesc(a), reward: a.reward });
   const badge = document.getElementById('scoreBadge');
   if (badge) {
     const r = badge.getBoundingClientRect();
@@ -1311,17 +1587,25 @@ function showAchievementToast(a) {
    HEADER / SCORE
    ========================================================= */
 function updateHeader() {
-  document.getElementById('userName').textContent = state.name ? `Привет, ${state.name}!` : 'Гость';
-  document.getElementById('avatar').textContent = state.avatar || '🐷';
-  document.getElementById('scoreValue').textContent = state.totalFuntiki;
-  document.getElementById('userSub').textContent = `Учим времена · ${state.answeredQuestions} ответов`;
+  const nameEl = document.getElementById('userName');
+  const avatarEl = document.getElementById('avatar');
+  const subEl = document.getElementById('userSub');
+  const scoreEl = document.getElementById('scoreValue');
+
+  nameEl.textContent = state.name ? t('greeting', { name: state.name }) : t('guest');
+  avatarEl.textContent = state.avatar || '🐷';
+  subEl.textContent = t('userSub', { n: state.answeredQuestions });
+  scoreEl.textContent = state.totalFuntiki;
+}
+function bumpScoreBadge() {
+  const badge = document.getElementById('scoreBadge');
+  badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
 }
 function addFuntiki(amount, x, y) {
   state.totalFuntiki += amount;
   saveState();
-  const badge = document.getElementById('scoreBadge');
   document.getElementById('scoreValue').textContent = state.totalFuntiki;
-  badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+  bumpScoreBadge();
   if (x != null && y != null) spawnBurst(x, y, { count: Math.min(12, 3 + amount*2), emojis: ['🐽','✨'], spread: 90 });
   updateHeader();
 }
@@ -1336,14 +1620,16 @@ function markNewAchievement() {
    ========================================================= */
 function checkAchievements() {
   const s = state, toUnlock = [];
-  const done = s.completedBasic.length + s.completedAdvanced.length + s.completedExam.length;
+  const done = s.completedBasic.length + s.completedAdvanced.length + s.completedExam.length + s.completedIelts.length;
   if (done >= 1) toUnlock.push('first_steps');
   if (Object.values(s.bestBasic).some(v => v >= BASIC_SIZE)) toUnlock.push('perfect_basic');
   if (Object.values(s.bestAdvanced).some(v => v >= ADVANCED_SIZE)) toUnlock.push('perfect_adv');
   if (s.completedExam.length >= 1 && Object.values(s.bestExam).some(v => v >= 15)) toUnlock.push('perfect_exam');
+  if (s.completedIelts.length >= 1 && Object.values(s.bestIelts).some(v => v >= 8)) toUnlock.push('perfect_ielts');
   if (s.completedBasic.length >= 12) toUnlock.push('all_basic');
   if (s.completedAdvanced.length >= 12) toUnlock.push('all_adv');
   if (s.completedExam.length >= 3) toUnlock.push('all_exams');
+  if (s.completedIelts.length >= 4) toUnlock.push('all_ielts');
   if (TENSES.every(t => s.bestBasic[t.id] >= BASIC_SIZE)) toUnlock.push('perfect_all_basic');
   if (TENSES.every(t => s.bestAdvanced[t.id] >= ADVANCED_SIZE)) toUnlock.push('perfect_all_adv');
   if (s.totalFuntiki >= 100) toUnlock.push('hundred');
@@ -1364,7 +1650,7 @@ function checkAchievements() {
 }
 
 /* =========================================================
-   BUILD TIMELINE + TOPICS
+   TIMELINE
    ========================================================= */
 const zones = { past: [], present: [], future: [] };
 TENSES.forEach(t => zones[t.zone].push(t));
@@ -1386,43 +1672,74 @@ function buildTimeline() {
     });
     grid.appendChild(col);
   });
-  // default active
-  const first = TENSES.find(t => t.id === 'present-continuous') || TENSES[0];
-  if (first) {
-    document.querySelector(`.tense-btn[data-id="${first.id}"]`).classList.add('active');
+  // ticks (3 markers: past / present / future)
+  const ticks = document.getElementById('timelineTicks');
+  ticks.innerHTML = '';
+  ['past','present','future'].forEach(z => {
+    const tk = document.createElement('span');
+    tk.className = 'tick zone-' + z;
+    tk.dataset.zone = z;
+    tk.style.color = { past: '#f59e0b', present: '#764ba2', future: '#3b82f6' }[z];
+    ticks.appendChild(tk);
+  });
+}
+
+function updateTimelineMarker(animate = false) {
+  const marker = document.getElementById('timelineMarker');
+  const active = document.querySelector('.tense-btn.active');
+  const grid = document.getElementById('tenseGrid');
+  if (!marker || !active || !grid) return;
+  const gridRect = grid.getBoundingClientRect();
+  const btnRect = active.getBoundingClientRect();
+  const centerX = btnRect.left + btnRect.width/2 - gridRect.left;
+  marker.style.left = centerX + 'px';
+  // Color
+  const zone = active.dataset.zone;
+  const color = { past: '#f59e0b', present: '#764ba2', future: '#3b82f6' }[zone];
+  marker.style.background = color;
+  // Tick highlight
+  document.querySelectorAll('.tick').forEach(tk => {
+    tk.classList.toggle('active', tk.dataset.zone === zone);
+  });
+  if (animate) {
+    marker.classList.remove('jumping');
+    void marker.offsetWidth;
+    marker.classList.add('jumping');
   }
 }
 
+/* =========================================================
+   TOPICS
+   ========================================================= */
 function buildTopics() {
   const wrap = document.getElementById('topicsWrap');
   wrap.innerHTML = '';
-  TENSES.forEach(t => {
+  TENSES.forEach(tense => {
     const topic = document.createElement('div');
     topic.className = 'topic';
-    topic.id = 'topic-' + t.id;
+    topic.id = 'topic-' + tense.id;
+    const theoryHtml = tense.theory[state.lang] || tense.theory.ru;
     topic.innerHTML = `
-      <nav class="sub-nav" data-topic="${t.id}">
-        <button class="active" data-sub="theory">📘 Теория</button>
-        <button data-sub="test">🎯 Тест</button>
-        <button data-sub="advanced">🔥 Продвинутый</button>
+      <nav class="sub-nav" data-topic="${tense.id}">
+        <button class="active" data-sub="theory">${t('theory')}</button>
+        <button data-sub="test">${t('test')}</button>
+        <button data-sub="advanced">${t('advanced')}</button>
       </nav>
-      <div class="subtab active theory" id="${t.id}-theory">${t.theory}</div>
-      <div class="subtab" id="${t.id}-test"><div class="quiz" data-quiz="${t.id}" data-mode="basic"></div></div>
-      <div class="subtab" id="${t.id}-advanced"><div class="quiz" data-quiz="${t.id}" data-mode="advanced"></div></div>
+      <div class="subtab active theory" id="${tense.id}-theory">${theoryHtml}</div>
+      <div class="subtab" id="${tense.id}-test"><div class="quiz" data-quiz="${tense.id}" data-mode="basic"></div></div>
+      <div class="subtab" id="${tense.id}-advanced"><div class="quiz" data-quiz="${tense.id}" data-mode="advanced"></div></div>
     `;
     wrap.appendChild(topic);
-    // init quizzes
     topic.querySelectorAll('.quiz').forEach(c => {
       const mode = c.dataset.mode;
-      const data = mode === 'advanced' ? t.advanced : t.basic;
-      new Quiz(c, data, { mode, testKey: t.id });
+      const data = mode === 'advanced' ? tense.advanced : tense.basic;
+      new Quiz(c, data, { mode, testKey: tense.id });
     });
-    // sub-nav
     topic.querySelectorAll('.sub-nav button').forEach(btn => {
       btn.addEventListener('click', () => {
         const sub = btn.dataset.sub;
         topic.querySelectorAll('.sub-nav button').forEach(b => b.classList.toggle('active', b === btn));
-        topic.querySelectorAll('.subtab').forEach(p => p.classList.toggle('active', p.id === `${t.id}-${sub}`));
+        topic.querySelectorAll('.subtab').forEach(p => p.classList.toggle('active', p.id === `${tense.id}-${sub}`));
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
@@ -1430,42 +1747,34 @@ function buildTopics() {
 }
 
 /* =========================================================
-   TENSE SWITCHING (with theme + animation)
+   TENSE SWITCHING
    ========================================================= */
 let currentTenseId = 'present-continuous';
 function switchTense(newId, event) {
-  if (newId === currentTenseId && !document.getElementById('examsWrap').classList.contains('hidden') === false) {
-    // still show it
-  }
   const oldT = TENSES.find(t => t.id === currentTenseId);
   const newT = TENSES.find(t => t.id === newId);
   if (!newT) return;
 
-  // hide exams if open
   document.getElementById('examsWrap').classList.add('hidden');
+  document.getElementById('ieltsWrap').classList.add('hidden');
   document.getElementById('timelineWrap').classList.remove('hidden');
 
-  // theme transition
   const app = document.getElementById('app');
   document.body.dataset.zone = newT.zone;
   app.dataset.zone = newT.zone;
 
-  // direction for panel animation
   const zoneOrder = { past: 0, present: 1, future: 2 };
   const dir = oldT && zoneOrder[newT.zone] < zoneOrder[oldT.zone] ? 'left' : 'right';
 
-  // switch panels
   document.querySelectorAll('.topic').forEach(p => p.classList.remove('active', 'slide-from-right', 'slide-from-left'));
   const newTopic = document.getElementById('topic-' + newId);
   newTopic.classList.add('active', dir === 'left' ? 'slide-from-left' : 'slide-from-right');
 
-  // buttons
   document.querySelectorAll('.tense-btn').forEach(b => b.classList.toggle('active', b.dataset.id === newId));
+  updateTimelineMarker(true);
 
-  // particle burst
   if (event && event.clientX) themeTransitionBurst(event.clientX, event.clientY, newT.zone);
 
-  // scroll timeline button into view
   const btn = document.querySelector(`.tense-btn[data-id="${newId}"]`);
   const scrollEl = document.querySelector('.timeline-scroll');
   if (btn && scrollEl && scrollEl.scrollWidth > scrollEl.clientWidth) {
@@ -1500,30 +1809,49 @@ class Quiz {
     if (this.mode === 'exam-basic') return FUNTIKI_EXAM_BASIC;
     if (this.mode === 'exam-advanced') return FUNTIKI_EXAM_ADV;
     if (this.mode === 'exam-mega') return FUNTIKI_EXAM_MEGA;
+    if (this.mode === 'ielts') return FUNTIKI_IELTS;
+    if (this.mode === 'ielts-hard') return FUNTIKI_IELTS_HARD;
     return FUNTIKI_BASIC;
   }
-
   getPerfectBonus() {
     if (this.mode === 'advanced') return BONUS_PERFECT_ADV;
     if (this.mode.startsWith('exam')) return BONUS_PERFECT_EXAM;
+    if (this.mode.startsWith('ielts')) return BONUS_PERFECT_IELTS;
     return BONUS_PERFECT_BASIC;
+  }
+  getBtnClass() {
+    if (this.mode === 'advanced') return 'advanced';
+    if (this.mode.startsWith('exam')) return 'exam';
+    if (this.mode === 'ielts') return 'ielts';
+    if (this.mode === 'ielts-hard') return 'ielts-hard';
+    return '';
+  }
+  getFillClass() {
+    if (this.mode === 'advanced') return 'advanced';
+    if (this.mode.startsWith('exam')) return 'exam';
+    if (this.mode === 'ielts') return 'ielts';
+    if (this.mode === 'ielts-hard') return 'ielts-hard';
+    return '';
   }
 
   render() {
     const mode = this.mode;
-    let modeClass = 'basic', modeText = '🎯 Базовый', btnClass = '';
-    if (mode === 'advanced') { modeClass = 'advanced'; modeText = '🔥 Продвинутый'; btnClass = 'advanced'; }
-    else if (mode === 'exam-basic') { modeClass = 'exam'; modeText = '🏁 Экзамен: базовый'; btnClass = 'exam'; }
-    else if (mode === 'exam-advanced') { modeClass = 'exam'; modeText = '🏁 Экзамен: продвинутый'; btnClass = 'exam'; }
-    else if (mode === 'exam-mega') { modeClass = 'exam'; modeText = '🏁 Мега-экзамен'; btnClass = 'exam'; }
+    let modeClass = 'basic', modeText = t('modeBasic');
+    if (mode === 'advanced') { modeClass = 'advanced'; modeText = t('modeAdvanced'); }
+    else if (mode === 'exam-basic') { modeClass = 'exam'; modeText = t('modeExam'); }
+    else if (mode === 'exam-advanced') { modeClass = 'exam'; modeText = t('modeExamAdv'); }
+    else if (mode === 'exam-mega') { modeClass = 'exam'; modeText = t('modeExamMega'); }
+    else if (mode === 'ielts') { modeClass = 'ielts'; modeText = t('modeIelts'); }
+    else if (mode === 'ielts-hard') { modeClass = 'ielts-hard'; modeText = t('modeIeltsHard'); }
 
     const reward = this.getReward();
-    const fillClass = mode === 'advanced' ? 'advanced' : (mode.startsWith('exam') ? 'exam' : '');
+    const fillClass = this.getFillClass();
+    const btnClass = this.getBtnClass();
 
     this.container.innerHTML = `
       <div class="quiz-header">
         <span class="mode-badge ${modeClass}">${modeText}</span>
-        <span>Вопрос: <b class="qNum">1</b> / <b class="qTotal">${this.questions.length}</b></span>
+        <span>${t('questionLabel')}: <b class="qNum">1</b> / <b class="qTotal">${this.questions.length}</b></span>
         <span style="font-weight:700">+${reward} 🐽</span>
       </div>
       <div class="progress-bar"><div class="progress-fill ${fillClass}"></div></div>
@@ -1531,17 +1859,17 @@ class Quiz {
         <div class="card"><div class="question"></div></div>
         <div class="answer-area"></div>
         <div class="feedback"></div>
-        <button class="btn nextBtn ${btnClass}" disabled>Следующий вопрос →</button>
+        <button class="btn nextBtn ${btnClass}" disabled>${t('nextQ')}</button>
       </div>
       <div class="result-screen hidden">
         <div class="result-emoji">🎉</div>
-        <div class="result-title">Готово!</div>
+        <div class="result-title">${t('resultDone')}</div>
         <div class="result-score"></div>
         <div class="result-reward hidden"></div>
         <div class="result-msg"></div>
         <div class="result-actions">
-          <button class="btn outline restartBtn">🔄 Ещё раз</button>
-          <button class="btn shareResultBtn">📤 Поделиться</button>
+          <button class="btn outline restartBtn">${t('again')}</button>
+          <button class="btn shareResultBtn">${t('shareBtn')}</button>
         </div>
       </div>
     `;
@@ -1574,7 +1902,7 @@ class Quiz {
     this.el.feedback.textContent = '';
     this.el.feedback.className = 'feedback';
     this.el.nextBtn.disabled = true;
-    this.el.nextBtn.textContent = this.current === this.questions.length - 1 ? 'Показать результат 🏁' : 'Следующий вопрос →';
+    this.el.nextBtn.textContent = this.current === this.questions.length - 1 ? t('showResult') : t('nextQ');
     this.el.progress.style.width = (this.current / this.questions.length * 100) + '%';
     this.buildUI(q);
   }
@@ -1601,13 +1929,13 @@ class Quiz {
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'input-answer';
-      input.placeholder = 'Введи ответ...';
+      input.placeholder = t('placeholderInput');
       input.autocomplete = 'off';
       input.spellcheck = false;
       input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !input.disabled && input.value.trim()) this.checkInput(); });
       const btn = document.createElement('button');
       btn.className = 'check-btn';
-      btn.textContent = 'Проверить';
+      btn.textContent = t('check');
       btn.disabled = true;
       btn.addEventListener('click', () => this.checkInput());
       input.addEventListener('input', () => { btn.disabled = !input.value.trim(); });
@@ -1616,11 +1944,12 @@ class Quiz {
       setTimeout(() => input.focus(), 80);
       this._inputEl = input; this._checkBtnEl = btn;
     } else if (q.type === 'reorder') {
-      this.el.question.innerHTML = `Составь предложение:<div class="question-hint">${q.hint}</div>`;
+      this.el.question.innerHTML = `${q.hint}<div class="question-hint">${state.lang === 'ru' ? 'Собери предложение' : 'Build the sentence'}</div>`;
       this._buildSelected = [];
       this._buildPool = shuffleWords(q.words);
       const built = document.createElement('div');
       built.className = 'reorder-built';
+      built.dataset.placeholder = t('placeholderReorder');
       const pool = document.createElement('div');
       pool.className = 'reorder-pool';
       area.appendChild(built); area.appendChild(pool);
@@ -1672,8 +2001,8 @@ class Quiz {
     } else {
       if (!checkBtn) {
         checkBtn = document.createElement('button');
-        checkBtn.className = 'btn reorder-check-btn ' + (this.mode === 'advanced' ? 'advanced' : (this.mode.startsWith('exam') ? 'exam' : ''));
-        checkBtn.textContent = 'Проверить';
+        checkBtn.className = 'btn reorder-check-btn ' + this.getBtnClass();
+        checkBtn.textContent = t('check');
         checkBtn.addEventListener('click', () => this.checkReorder());
         area.appendChild(checkBtn);
       }
@@ -1690,13 +2019,13 @@ class Quiz {
     if (index === q.correct) {
       btn.classList.add('correct');
       this.score++;
-      this.el.feedback.textContent = '✅ Верно! ' + q.explain;
+      this.el.feedback.textContent = t('correct') + ' ' + q.explain;
       this.el.feedback.classList.add('ok');
       this.rewardCorrect(event);
     } else {
       btn.classList.add('wrong');
       all[q.correct].classList.add('correct');
-      this.el.feedback.textContent = '❌ Неверно. ' + q.explain;
+      this.el.feedback.textContent = t('incorrect') + ' ' + q.explain;
       this.el.feedback.classList.add('no');
     }
     state.answeredQuestions++; saveState(); updateHeader();
@@ -1715,12 +2044,12 @@ class Quiz {
     if (ok) {
       this._inputEl.classList.add('correct');
       this.score++;
-      this.el.feedback.textContent = '✅ Верно! ' + q.explain;
+      this.el.feedback.textContent = t('correct') + ' ' + q.explain;
       this.el.feedback.classList.add('ok');
       this.rewardCorrect({ clientX: cx, clientY: cy });
     } else {
       this._inputEl.classList.add('wrong');
-      this.el.feedback.textContent = `❌ Правильный ответ: ${q.answers[0]}. ${q.explain}`;
+      this.el.feedback.textContent = `${t('answerWas')} ${q.answers[0]}. ${q.explain}`;
       this.el.feedback.classList.add('no');
     }
     state.answeredQuestions++; saveState(); updateHeader();
@@ -1744,11 +2073,11 @@ class Quiz {
     const cx = r.left + r.width/2, cy = r.top + r.height/2;
     if (ok) {
       this.score++;
-      this.el.feedback.textContent = '✅ Верно! ' + q.explain;
+      this.el.feedback.textContent = t('correct') + ' ' + q.explain;
       this.el.feedback.classList.add('ok');
       this.rewardCorrect({ clientX: cx, clientY: cy });
     } else {
-      this.el.feedback.textContent = `❌ Неверно. Правильно: ${expected}`;
+      this.el.feedback.textContent = `${t('rightAnswer')} ${expected}`;
       this.el.feedback.classList.add('no');
     }
     state.answeredQuestions++; saveState(); updateHeader();
@@ -1777,10 +2106,10 @@ class Quiz {
     const percent = Math.round(this.score / total * 100);
     const isPerfect = this.score === total;
 
-    // save
     let storeKey = 'bestBasic', listKey = 'completedBasic';
     if (this.mode === 'advanced') { storeKey = 'bestAdvanced'; listKey = 'completedAdvanced'; }
     else if (this.mode.startsWith('exam')) { storeKey = 'bestExam'; listKey = 'completedExam'; }
+    else if (this.mode.startsWith('ielts')) { storeKey = 'bestIelts'; listKey = 'completedIelts'; }
     if (!state[storeKey][this.testKey] || state[storeKey][this.testKey] < this.score) state[storeKey][this.testKey] = this.score;
     if (!state[listKey].includes(this.testKey)) state[listKey].push(this.testKey);
 
@@ -1789,18 +2118,18 @@ class Quiz {
     saveState(); updateHeader();
 
     let emoji, title, msg;
-    if (percent === 100) { emoji = '🏆'; title = 'Идеально!'; msg = 'Все ответы верные — ты знаешь это время!'; }
-    else if (percent >= 70) { emoji = '🎉'; title = 'Отличный результат!'; msg = 'Хорошо усвоил. Ещё чуть-чуть практики!'; }
-    else if (percent >= 50) { emoji = '👍'; title = 'Неплохо!'; msg = 'Стоит повторить правила образования.'; }
-    else { emoji = '📚'; title = 'Нужно повторить'; msg = 'Перечитай теорию и попробуй снова.'; }
+    if (percent === 100) { emoji = '🏆'; title = t('perfect'); msg = t('perfectMsg'); }
+    else if (percent >= 70) { emoji = '🎉'; title = t('great'); msg = t('greatMsg'); }
+    else if (percent >= 50) { emoji = '👍'; title = t('ok'); msg = t('okMsg'); }
+    else { emoji = '📚'; title = t('repeat'); msg = t('repeatMsg'); }
 
     this.el.resultEmoji.textContent = emoji;
     this.el.resultTitle.textContent = title;
-    this.el.resultScore.textContent = `${this.score} из ${total} (${percent}%)`;
+    this.el.resultScore.textContent = `${this.score} / ${total} (${percent}%)`;
     const totalEarned = this.earnedFuntiki + bonus;
     if (totalEarned > 0) {
       this.el.resultReward.classList.remove('hidden');
-      this.el.resultReward.innerHTML = `<span>🐽</span><span>+${totalEarned} Фунтиков</span>${bonus ? `<span style="font-size:11.5px;opacity:0.8">+${bonus} за идеал</span>` : ''}`;
+      this.el.resultReward.innerHTML = `<span>🐽</span><span>+${totalEarned} ${t('funtiki')}</span>${bonus ? `<span style="font-size:11.5px;opacity:0.8">${t('bonusForPerfect', {n: bonus})}</span>` : ''}`;
     } else this.el.resultReward.classList.add('hidden');
     this.el.resultMsg.textContent = msg;
 
@@ -1821,30 +2150,27 @@ class Quiz {
 }
 
 /* =========================================================
-   EXAMS
+   EXAMS BUILD
    ========================================================= */
 function pickRandom(arr, n) { return shuffle(arr).slice(0, n); }
 function withSource(q, tenseId) { return { ...q, _srcTense: tenseId }; }
 
 function buildExamQuestions(type) {
   if (type === 'exam-basic') {
-    // 15 вопросов: по 1-2 из каждой темы (basic)
     let pool = [];
-    TENSES.forEach(t => t.basic.forEach(q => pool.push(withSource(q, t.id))));
+    TENSES.forEach(tt => tt.basic.forEach(q => pool.push(withSource(q, tt.id))));
     return pickRandom(pool, 15);
   }
   if (type === 'exam-advanced') {
-    // 10 вопросов из advanced
     let pool = [];
-    TENSES.forEach(t => t.advanced.forEach(q => pool.push(withSource(q, t.id))));
+    TENSES.forEach(tt => tt.advanced.forEach(q => pool.push(withSource(q, tt.id))));
     return pickRandom(pool, 10);
   }
   if (type === 'exam-mega') {
-    // 20 вопросов: микс
     let pool = [];
-    TENSES.forEach(t => {
-      t.basic.forEach(q => pool.push(withSource(q, t.id)));
-      t.advanced.forEach(q => pool.push(withSource(q, t.id)));
+    TENSES.forEach(tt => {
+      tt.basic.forEach(q => pool.push(withSource(q, tt.id)));
+      tt.advanced.forEach(q => pool.push(withSource(q, tt.id)));
     });
     return pickRandom(pool, 20);
   }
@@ -1854,17 +2180,17 @@ function buildExamQuestions(type) {
 function buildExams() {
   const wrap = document.getElementById('examsWrap');
   wrap.innerHTML = `
-    <h2>🏁 Экзамены</h2>
-    <p>Смешанные вопросы из разных времён — попробуй угадать, какое время здесь используется! Подсказки нет.</p>
+    <h2>${t('examsTitle')}</h2>
+    <p>${t('examsSub')}</p>
     <div class="exam-grid" id="examGrid"></div>
     <div id="activeExamWrap" class="hidden"></div>
-    <button class="btn outline hidden" id="closeExamBtn" style="margin-top:12px">← К списку экзаменов</button>
+    <button class="btn outline hidden" id="closeExamBtn" style="margin-top:12px">${t('backToExams')}</button>
   `;
   const grid = wrap.querySelector('#examGrid');
   const exams = [
-    { id: 'exam-basic',    icon: '🎯', name: 'Базовый экзамен',      desc: 'Простой уровень: выбор ответа. 15 вопросов из всех 12 времён.', time: '10 мин', diff: 'Easy', hot: false },
-    { id: 'exam-advanced', icon: '🔥', name: 'Продвинутый экзамен',  desc: '10 вопросов из продвинутых тестов: ввод и сборка предложений.', time: '12 мин', diff: 'Hard', hot: true },
-    { id: 'exam-mega',     icon: '💪', name: 'Мега-экзамен',         desc: '20 смешанных вопросов всех типов. Настоящее испытание!',          time: '20 мин', diff: 'Mega', hot: true }
+    { id: 'exam-basic', icon: '🎯', name: t('basicExam'), desc: t('basicExamDesc'), time: '10 min', diff: t('diffEasy'), hot: false },
+    { id: 'exam-advanced', icon: '🔥', name: t('advExam'), desc: t('advExamDesc'), time: '12 min', diff: t('diffHard'), hot: true },
+    { id: 'exam-mega', icon: '💪', name: t('megaExam'), desc: t('megaExamDesc'), time: '20 min', diff: t('diffMega'), hot: true }
   ];
   exams.forEach(e => {
     const card = document.createElement('div');
@@ -1881,7 +2207,6 @@ function buildExams() {
     card.addEventListener('click', () => startExam(e.id));
     grid.appendChild(card);
   });
-
   wrap.querySelector('#closeExamBtn').addEventListener('click', closeExam);
 }
 
@@ -1890,22 +2215,18 @@ function startExam(examId) {
   const grid = wrap.querySelector('#examGrid');
   const activeWrap = wrap.querySelector('#activeExamWrap');
   const closeBtn = wrap.querySelector('#closeExamBtn');
-
   grid.classList.add('hidden');
   closeBtn.classList.remove('hidden');
   activeWrap.classList.remove('hidden');
   activeWrap.innerHTML = '';
-
   const quizEl = document.createElement('div');
   quizEl.className = 'quiz';
   activeWrap.appendChild(quizEl);
-
   const questions = buildExamQuestions(examId);
   const testKeyMap = { 'exam-basic': 'basic-exam', 'exam-advanced': 'advanced-exam', 'exam-mega': 'mega-exam' };
   new Quiz(quizEl, questions, { mode: examId, testKey: testKeyMap[examId] || examId });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
 function closeExam() {
   const wrap = document.getElementById('examsWrap');
   wrap.querySelector('#examGrid').classList.remove('hidden');
@@ -1914,58 +2235,128 @@ function closeExam() {
   wrap.querySelector('#activeExamWrap').innerHTML = '';
 }
 
-document.getElementById('examsBtn').addEventListener('click', () => {
-  document.getElementById('timelineWrap').classList.add('hidden');
-  document.getElementById('topicsWrap').querySelectorAll('.topic').forEach(t => t.classList.remove('active'));
-  const wrap = document.getElementById('examsWrap');
-  wrap.classList.remove('hidden');
-  closeExam();
+/* =========================================================
+   IELTS BUILD
+   ========================================================= */
+function buildIelts() {
+  const wrap = document.getElementById('ieltsWrap');
+  wrap.innerHTML = `
+    <h2>${t('ieltsTitle')}</h2>
+    <p>${t('ieltsSub')}</p>
+    <div class="exam-grid" id="ieltsGrid"></div>
+    <div id="activeIeltsWrap" class="hidden"></div>
+    <button class="btn outline hidden" id="closeIeltsBtn" style="margin-top:12px">${t('backToIelts')}</button>
+  `;
+  const grid = wrap.querySelector('#ieltsGrid');
+  const items = [
+    { id: 'ielts-tense-choice', icon: '🧩', name: t('ieltsTenseChoice'), desc: t('ieltsTenseChoiceDesc'), time: '15 min', diff: t('diffHard'), mode: 'ielts' },
+    { id: 'ielts-error-correction', icon: '🔍', name: t('ieltsErrorCorrection'), desc: t('ieltsErrorCorrectionDesc'), time: '12 min', diff: t('diffIelts'), mode: 'ielts' },
+    { id: 'ielts-transformation', icon: '🛠', name: t('ieltsTransformation'), desc: t('ieltsTransformationDesc'), time: '15 min', diff: t('diffExpert'), mode: 'ielts-hard' },
+    { id: 'ielts-full-mock', icon: '🎓', name: t('ieltsFullMock'), desc: t('ieltsFullMockDesc'), time: '25 min', diff: t('diffExpert'), mode: 'ielts-hard' }
+  ];
+  items.forEach(e => {
+    const card = document.createElement('div');
+    card.className = 'exam-card';
+    card.innerHTML = `
+      <span class="exam-icon">${e.icon}</span>
+      <div class="exam-name">${e.name}</div>
+      <div class="exam-desc">${e.desc}</div>
+      <div class="exam-meta">
+        <span class="exam-chip">⏱ ${e.time}</span>
+        <span class="exam-chip ielts">${e.diff}</span>
+      </div>
+    `;
+    card.addEventListener('click', () => startIelts(e.id, e.mode));
+    grid.appendChild(card);
+  });
+  wrap.querySelector('#closeIeltsBtn').addEventListener('click', closeIelts);
+}
+
+function buildIeltsQuestions(sectionId) {
+  if (sectionId === 'ielts-full-mock') {
+    let pool = [];
+    Object.values(IELTS_DATA).forEach(arr => arr.forEach(q => pool.push(q)));
+    return pickRandom(pool, 20);
+  }
+  return shuffle(IELTS_DATA[sectionId] || []);
+}
+
+function startIelts(sectionId, mode) {
+  const wrap = document.getElementById('ieltsWrap');
+  const grid = wrap.querySelector('#ieltsGrid');
+  const activeWrap = wrap.querySelector('#activeIeltsWrap');
+  const closeBtn = wrap.querySelector('#closeIeltsBtn');
+  grid.classList.add('hidden');
+  closeBtn.classList.remove('hidden');
+  activeWrap.classList.remove('hidden');
+  activeWrap.innerHTML = '';
+  const quizEl = document.createElement('div');
+  quizEl.className = 'quiz';
+  activeWrap.appendChild(quizEl);
+  const questions = buildIeltsQuestions(sectionId);
+  new Quiz(quizEl, questions, { mode, testKey: sectionId });
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  // small burst
-  spawnBurst(window.innerWidth / 2, 120, { count: 18, emojis: ['🏁','✨','⭐'], spread: 180 });
-});
+}
+function closeIelts() {
+  const wrap = document.getElementById('ieltsWrap');
+  wrap.querySelector('#ieltsGrid').classList.remove('hidden');
+  wrap.querySelector('#activeIeltsWrap').classList.add('hidden');
+  wrap.querySelector('#closeIeltsBtn').classList.add('hidden');
+  wrap.querySelector('#activeIeltsWrap').innerHTML = '';
+}
+
+/* =========================================================
+   SECTION BUTTONS
+   ========================================================= */
+function showSection(which) {
+  document.getElementById('timelineWrap').classList.add('hidden');
+  document.getElementById('topicsWrap').querySelectorAll('.topic').forEach(tt => tt.classList.remove('active'));
+  document.getElementById('examsWrap').classList.toggle('hidden', which !== 'exams');
+  document.getElementById('ieltsWrap').classList.toggle('hidden', which !== 'ielts');
+  document.getElementById('examsBtn').classList.toggle('active', which === 'exams');
+  document.getElementById('ieltsBtn').classList.toggle('active', which === 'ielts');
+  if (which === 'exams') closeExam();
+  if (which === 'ielts') closeIelts();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  spawnBurst(window.innerWidth / 2, 120, { count: 16, emojis: which === 'exams' ? ['🏁','✨'] : ['🎓','✨'], spread: 160 });
+}
+
+document.getElementById('examsBtn').addEventListener('click', () => showSection('exams'));
+document.getElementById('ieltsBtn').addEventListener('click', () => showSection('ielts'));
 
 /* =========================================================
    SHARE
    ========================================================= */
 function generateShareText(extra) {
   const achi = state.achievements.length;
-  const text = `${state.avatar || '🐷'} ${state.name || 'Игрок'} набрал ${state.totalFuntiki} Фунтиков в English Tenses! ` +
-    `${achi} ${achi === 1 ? 'ачивка' : 'ачивок'} 🏆` +
+  const achText = achi === 1 ? t('achSingular', { n: achi }) : t('achPlural', { n: achi });
+  return t('shareText', { avatar: state.avatar || '🐷', name: state.name || t('guest'), score: state.totalFuntiki, ach: achText }) +
     (extra ? ` ${extra}` : '') +
-    `\nОбгони меня 🐽`;
-  return text;
+    `\n${t('challenge')}`;
 }
 async function shareApp(extra) {
   const text = generateShareText(extra);
-  const shareData = {
-    title: 'English Tenses — играй и учись',
-    text: text,
-    url: location.href
-  };
+  const shareData = { title: 'English Tenses', text: text, url: location.href };
   try {
     if (navigator.share) {
       await navigator.share(shareData);
       spawnBurst(window.innerWidth / 2, window.innerHeight / 2, { count: 15, emojis: ['📤','✨','🐽'], spread: 150 });
     } else {
       await navigator.clipboard.writeText(text + '\n' + location.href);
-      showToast({ icon: '📋', title: 'Скопировано!', desc: 'Вставь сообщение в чат или соцсеть.' });
+      showToast({ icon: '📋', title: t('copied'), desc: t('copiedDesc') });
     }
-  } catch (e) {
-    // fallback copy
+  } catch {
     try {
       await navigator.clipboard.writeText(text + '\n' + location.href);
-      showToast({ icon: '📋', title: 'Скопировано!', desc: 'Вставь сообщение в чат или соцсеть.' });
+      showToast({ icon: '📋', title: t('copied'), desc: t('copiedDesc') });
     } catch {}
   }
 }
 function shareResult(quiz) {
   const total = quiz.questions.length;
   const percent = Math.round(quiz.score / total * 100);
-  const extra = `Результат: ${quiz.score}/${total} (${percent}%) 🔥`;
-  shareApp(extra);
+  shareApp(t('resultShareExtra', { score: quiz.score, total, percent }));
 }
-
 document.getElementById('shareBtn').addEventListener('click', () => shareApp());
 
 /* =========================================================
@@ -1981,14 +2372,15 @@ function renderAchievements() {
     card.innerHTML = `
       ${!unlocked ? '<span class="ach-locked-tag">🔒</span>' : ''}
       <div class="ach-icon">${a.icon}</div>
-      <div class="ach-name">${a.name}</div>
-      <div class="ach-desc">${a.desc}</div>
+      <div class="ach-name">${achName(a)}</div>
+      <div class="ach-desc">${achDesc(a)}</div>
       <div class="ach-reward">+${a.reward} 🐽</div>
     `;
     grid.appendChild(card);
   });
-  document.getElementById('achCount').textContent = state.achievements.length;
-  document.getElementById('achTotal').textContent = ACHIEVEMENTS.length;
+  document.getElementById('achModalSub').innerHTML = `${t('collected')} <b>${state.achievements.length}</b> ${t('of')} <b>${ACHIEVEMENTS.length}</b>`;
+  document.getElementById('achModalTitle').textContent = t('achievementsTitle');
+  document.getElementById('closeAchBtn').textContent = t('close');
 }
 document.getElementById('achBtn').addEventListener('click', () => {
   renderAchievements();
@@ -2003,7 +2395,7 @@ document.getElementById('achModal').addEventListener('click', (e) => {
 });
 
 /* =========================================================
-   WELCOME / PROFILE MODAL
+   WELCOME / PROFILE
    ========================================================= */
 const welcomeModal = document.getElementById('welcomeModal');
 const nameInput = document.getElementById('nameInput');
@@ -2024,7 +2416,6 @@ function buildEmojiPicker() {
       pickedEmoji = e;
       emojiGrid.querySelectorAll('.emoji-opt').forEach(b => b.classList.toggle('selected', b.dataset.emoji === e));
       document.getElementById('welcomeEmoji').textContent = e;
-      // small burst
       const r = btn.getBoundingClientRect();
       spawnBurst(r.left + r.width/2, r.top + r.height/2, { count: 6, emojis: [e, '✨'], spread: 60, duration: 600 });
     });
@@ -2037,11 +2428,11 @@ function showWelcome(editMode = false) {
   pickedEmoji = state.avatar || '🐷';
   nameInput.value = state.name || '';
   document.getElementById('welcomeEmoji').textContent = pickedEmoji;
-  document.getElementById('welcomeTitle').textContent = editMode ? 'Профиль' : 'Привет!';
-  document.getElementById('welcomeSub').innerHTML = editMode
-    ? 'Измени имя или аватар'
-    : 'Как тебя зовут? Будем собирать <b>Фунтики</b> 🐽 и открывать достижения 🏆';
-  startBtn.textContent = editMode ? 'Сохранить ✓' : 'Поехали! 🚀';
+  document.getElementById('welcomeTitle').textContent = t('welcomeTitle');
+  document.getElementById('welcomeSub').innerHTML = editMode ? t('welcomeSubEdit') : t('welcomeSub');
+  document.getElementById('emojiLabel').textContent = t('pickAvatar');
+  nameInput.placeholder = state.lang === 'ru' ? 'Твоё имя...' : 'Your name...';
+  startBtn.textContent = editMode ? t('saveBtn') : t('goBtn');
   buildEmojiPicker();
   welcomeModal.classList.remove('hidden');
   setTimeout(() => nameInput.focus(), 200);
@@ -2061,7 +2452,7 @@ function commitName() {
   if (!editing) {
     spawnBurst(window.innerWidth / 2, window.innerHeight * 0.4, { count: 24, emojis: ['🐽','🎉','✨','⭐'], spread: 240, duration: 1400 });
   } else {
-    showToast({ icon: '✓', title: 'Сохранено', desc: 'Профиль обновлён' });
+    showToast({ icon: '✓', title: t('saved'), desc: t('savedDesc') });
   }
   checkAchievements();
 }
@@ -2074,26 +2465,66 @@ nameInput.addEventListener('input', () => {
 document.getElementById('avatar').addEventListener('click', () => showWelcome(true));
 
 /* =========================================================
+   LANGUAGE TOGGLE
+   ========================================================= */
+function applyLanguage() {
+  document.documentElement.lang = state.lang;
+  document.getElementById('langBtn').textContent = state.lang === 'ru' ? 'EN' : 'RU';
+  // update static data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    el.textContent = t(key);
+  });
+  updateHeader();
+  // rebuild everything that has language-dependent content
+  buildTimeline();
+  buildTopics();
+  buildExams();
+  buildIelts();
+  // restore active topic
+  const active = TENSES.find(tt => tt.id === currentTenseId) || TENSES[0];
+  document.getElementById('topic-' + active.id).classList.add('active');
+  document.querySelectorAll('.tense-btn').forEach(b => b.classList.toggle('active', b.dataset.id === active.id));
+  setTimeout(() => updateTimelineMarker(false), 60);
+  // header icons
+  document.getElementById('examsBtn').title = t('exams');
+  document.getElementById('ieltsBtn').title = t('ielts');
+  document.getElementById('shareBtn').title = t('shareBtn');
+  document.getElementById('achBtn').title = t('achievementsTitle');
+}
+
+document.getElementById('langBtn').addEventListener('click', () => {
+  state.lang = state.lang === 'ru' ? 'en' : 'ru';
+  saveState();
+  applyLanguage();
+  spawnBurst(window.innerWidth - 60, 60, { count: 12, emojis: ['🌐','✨'], spread: 100, duration: 800 });
+});
+
+/* =========================================================
    BOOT
    ========================================================= */
 buildTimeline();
 buildTopics();
 buildExams();
+buildIelts();
+applyLanguage();
 updateHeader();
+
+// initial zone
+const initial = TENSES.find(tt => tt.id === currentTenseId);
+if (initial) {
+  document.getElementById('app').dataset.zone = initial.zone;
+  document.body.dataset.zone = initial.zone;
+  document.querySelectorAll('.topic').forEach(p => p.classList.remove('active'));
+  document.getElementById('topic-' + currentTenseId).classList.add('active');
+}
+setTimeout(() => updateTimelineMarker(false), 100);
+window.addEventListener('resize', () => setTimeout(() => updateTimelineMarker(false), 80));
 
 if (!state.name) {
   setTimeout(() => showWelcome(false), 200);
 } else {
   markNewAchievement();
-}
-
-// set initial zone theme
-const initial = TENSES.find(t => t.id === currentTenseId);
-if (initial) {
-  document.getElementById('app').dataset.zone = initial.zone;
-  document.body.dataset.zone = initial.zone;
-  document.querySelectorAll('.topic').forEach(p => p.classList.remove('active'));
-  document.getElementById('topic-' + currentTenseId).classList.add('active', 'slide-from-right');
 }
 </script>
 </body>
