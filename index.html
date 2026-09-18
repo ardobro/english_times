@@ -1212,4 +1212,889 @@ const ACHIEVEMENTS = [
   { id: 'first_steps',   icon: '👶', name: 'Первые шаги',    desc: 'Завершить первый тест',              reward: 5 },
   { id: 'perfect_basic', icon: '⭐', name: 'Отличник',        desc: '100% в базовом тесте',               reward: 15 },
   { id: 'perfect_adv',   icon: '💎', name: 'Мастер',          desc: '100% в продвинутом тесте',           reward: 30 },
-  { id: 'perfect_exam',  icon: '🎖', name: 'Э
+  { id: 'perfect_exam',  icon: '🎖', name: 'Экзаменатор',     desc: '100% в любом экзамене',              reward: 40 },
+  { id: 'all_basic',     icon: '🎓', name: 'Полиглот',        desc: 'Все 12 базовых тестов',              reward: 100 },
+  { id: 'all_adv',       icon: '🧠', name: 'Гуру',            desc: 'Все 12 продвинутых тестов',          reward: 150 },
+  { id: 'all_exams',     icon: '🏁', name: 'Покоритель',      desc: 'Все 3 экзамена пройдены',            reward: 80 },
+  { id: 'perfect_all_basic', icon: '🏅', name: 'Перфекционист', desc: '100% во всех базовых тестах',      reward: 300 },
+  { id: 'perfect_all_adv',   icon: '👑', name: 'Легенда',      desc: '100% во всех продвинутых тестах',  reward: 500 },
+  { id: 'hundred',       icon: '💰', name: 'Копилка',         desc: '100 Фунтиков',                       reward: 25 },
+  { id: 'fivehundred',   icon: '🐷', name: 'Богач',           desc: '500 Фунтиков',                       reward: 75 },
+  { id: 'thousand',      icon: '💎', name: 'Миллионер',       desc: '1000 Фунтиков',                      reward: 100 },
+  { id: 'pig_master',    icon: '🐽', name: 'Повелитель Пятачков', desc: '2000 Фунтиков',                 reward: 300 },
+  { id: 'marathoner',    icon: '🏃', name: 'Марафонец',       desc: '100 отвеченных вопросов',            reward: 40 },
+  { id: 'super_marathon', icon: '🔥', name: 'Сверхмарафонец', desc: '300 отвеченных вопросов',            reward: 100 },
+];
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function normalize(s) { return String(s).toLowerCase().trim().replace(/\s+/g, ' ').replace(/[.!?]+$/, ''); }
+function shuffle(a) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+function shuffleWords(words) {
+  const a = [...words];
+  if (a.length < 2) return a;
+  let tries = 0;
+  do { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } tries++; }
+  while (a.join(' ') === words.join(' ') && tries < 20);
+  return a;
+}
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+function spawnBurst(x, y, opts = {}) {
+  const count = opts.count ?? 12;
+  const emojis = opts.emojis ?? ['🐽', '✨', '⭐'];
+  const spread = opts.spread ?? 130;
+  const dur = opts.duration ?? 1000;
+  const layer = document.getElementById('particleLayer');
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    el.style.fontSize = (14 + Math.random()*16) + 'px';
+    layer.appendChild(el);
+    const angle = Math.random()*Math.PI*2;
+    const dist = spread * (0.4 + Math.random()*0.8);
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist - 50;
+    const d = dur * (0.7 + Math.random()*0.6);
+    el.animate([
+      { transform: 'translate(-50%,-50%) scale(1) rotate(0deg)', opacity: 1 },
+      { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.4) rotate(${(Math.random()-0.5)*360}deg)`, opacity: 0 }
+    ], { duration: d, easing: 'cubic-bezier(0.15,0.7,0.4,1)' }).onfinish = () => el.remove();
+  }
+}
+function bigCelebration() {
+  const w = window.innerWidth, h = window.innerHeight;
+  spawnBurst(w/2, h/2, { count: 40, emojis: ['🐽','✨','⭐','🎉','💫'], spread: 320, duration: 1600 });
+  setTimeout(() => spawnBurst(w*0.15, h*0.35, { count: 18, emojis: ['🐽','✨','⭐'], spread: 180 }), 200);
+  setTimeout(() => spawnBurst(w*0.85, h*0.35, { count: 18, emojis: ['🐽','✨','⭐'], spread: 180 }), 320);
+}
+function themeTransitionBurst(x, y, zone) {
+  const colors = { past: ['🔥','✨','🌟'], present: ['✨','💫','⭐'], future: ['🌊','✨','💫'] };
+  spawnBurst(x, y, { count: 14, emojis: colors[zone] || ['✨'], spread: 130, duration: 900 });
+}
+
+/* =========================================================
+   TOASTS
+   ========================================================= */
+function showToast({ icon, title, desc, reward }) {
+  const layer = document.getElementById('toastLayer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <div class="toast-icon">${icon}</div>
+    <div class="toast-body">
+      <div class="toast-title">${title}</div>
+      <div class="toast-desc">${desc}</div>
+      ${reward ? `<div class="toast-reward">+${reward} 🐽</div>` : ''}
+    </div>
+  `;
+  layer.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 4500);
+}
+function showAchievementToast(a) {
+  showToast({ icon: a.icon, title: `🏆 ${a.name}`, desc: a.desc, reward: a.reward });
+  const badge = document.getElementById('scoreBadge');
+  if (badge) {
+    const r = badge.getBoundingClientRect();
+    spawnBurst(r.left + r.width/2, r.top + r.height/2, { count: 24, emojis: ['🐽','✨','⭐','🎉'], spread: 200, duration: 1400 });
+  }
+  markNewAchievement();
+}
+
+/* =========================================================
+   HEADER / SCORE
+   ========================================================= */
+function updateHeader() {
+  document.getElementById('userName').textContent = state.name ? `Привет, ${state.name}!` : 'Гость';
+  document.getElementById('avatar').textContent = state.avatar || '🐷';
+  document.getElementById('scoreValue').textContent = state.totalFuntiki;
+  document.getElementById('userSub').textContent = `Учим времена · ${state.answeredQuestions} ответов`;
+}
+function addFuntiki(amount, x, y) {
+  state.totalFuntiki += amount;
+  saveState();
+  const badge = document.getElementById('scoreBadge');
+  document.getElementById('scoreValue').textContent = state.totalFuntiki;
+  badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+  if (x != null && y != null) spawnBurst(x, y, { count: Math.min(12, 3 + amount*2), emojis: ['🐽','✨'], spread: 90 });
+  updateHeader();
+}
+function markNewAchievement() {
+  const btn = document.getElementById('achBtn');
+  btn.classList.add('has-new');
+  document.getElementById('achDot').textContent = state.achievements.length;
+}
+
+/* =========================================================
+   ACHIEVEMENTS CHECK
+   ========================================================= */
+function checkAchievements() {
+  const s = state, toUnlock = [];
+  const done = s.completedBasic.length + s.completedAdvanced.length + s.completedExam.length;
+  if (done >= 1) toUnlock.push('first_steps');
+  if (Object.values(s.bestBasic).some(v => v >= BASIC_SIZE)) toUnlock.push('perfect_basic');
+  if (Object.values(s.bestAdvanced).some(v => v >= ADVANCED_SIZE)) toUnlock.push('perfect_adv');
+  if (s.completedExam.length >= 1 && Object.values(s.bestExam).some(v => v >= 15)) toUnlock.push('perfect_exam');
+  if (s.completedBasic.length >= 12) toUnlock.push('all_basic');
+  if (s.completedAdvanced.length >= 12) toUnlock.push('all_adv');
+  if (s.completedExam.length >= 3) toUnlock.push('all_exams');
+  if (TENSES.every(t => s.bestBasic[t.id] >= BASIC_SIZE)) toUnlock.push('perfect_all_basic');
+  if (TENSES.every(t => s.bestAdvanced[t.id] >= ADVANCED_SIZE)) toUnlock.push('perfect_all_adv');
+  if (s.totalFuntiki >= 100) toUnlock.push('hundred');
+  if (s.totalFuntiki >= 500) toUnlock.push('fivehundred');
+  if (s.totalFuntiki >= 1000) toUnlock.push('thousand');
+  if (s.totalFuntiki >= 2000) toUnlock.push('pig_master');
+  if (s.answeredQuestions >= 100) toUnlock.push('marathoner');
+  if (s.answeredQuestions >= 300) toUnlock.push('super_marathon');
+
+  for (const id of toUnlock) {
+    if (!s.achievements.includes(id)) {
+      s.achievements.push(id);
+      const a = ACHIEVEMENTS.find(x => x.id === id);
+      if (a) { s.totalFuntiki += a.reward; setTimeout(() => showAchievementToast(a), 300); }
+    }
+  }
+  if (toUnlock.length) { saveState(); updateHeader(); }
+}
+
+/* =========================================================
+   BUILD TIMELINE + TOPICS
+   ========================================================= */
+const zones = { past: [], present: [], future: [] };
+TENSES.forEach(t => zones[t.zone].push(t));
+
+function buildTimeline() {
+  const grid = document.getElementById('tenseGrid');
+  grid.innerHTML = '';
+  ['past','present','future'].forEach(zoneId => {
+    const col = document.createElement('div');
+    col.className = 'tense-zone';
+    zones[zoneId].forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'tense-btn';
+      btn.dataset.zone = t.zone;
+      btn.dataset.id = t.id;
+      btn.innerHTML = `<span class="shape ${t.type}"></span><span class="t-name">${t.name}</span>`;
+      btn.addEventListener('click', (e) => switchTense(t.id, e));
+      col.appendChild(btn);
+    });
+    grid.appendChild(col);
+  });
+  // default active
+  const first = TENSES.find(t => t.id === 'present-continuous') || TENSES[0];
+  if (first) {
+    document.querySelector(`.tense-btn[data-id="${first.id}"]`).classList.add('active');
+  }
+}
+
+function buildTopics() {
+  const wrap = document.getElementById('topicsWrap');
+  wrap.innerHTML = '';
+  TENSES.forEach(t => {
+    const topic = document.createElement('div');
+    topic.className = 'topic';
+    topic.id = 'topic-' + t.id;
+    topic.innerHTML = `
+      <nav class="sub-nav" data-topic="${t.id}">
+        <button class="active" data-sub="theory">📘 Теория</button>
+        <button data-sub="test">🎯 Тест</button>
+        <button data-sub="advanced">🔥 Продвинутый</button>
+      </nav>
+      <div class="subtab active theory" id="${t.id}-theory">${t.theory}</div>
+      <div class="subtab" id="${t.id}-test"><div class="quiz" data-quiz="${t.id}" data-mode="basic"></div></div>
+      <div class="subtab" id="${t.id}-advanced"><div class="quiz" data-quiz="${t.id}" data-mode="advanced"></div></div>
+    `;
+    wrap.appendChild(topic);
+    // init quizzes
+    topic.querySelectorAll('.quiz').forEach(c => {
+      const mode = c.dataset.mode;
+      const data = mode === 'advanced' ? t.advanced : t.basic;
+      new Quiz(c, data, { mode, testKey: t.id });
+    });
+    // sub-nav
+    topic.querySelectorAll('.sub-nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sub = btn.dataset.sub;
+        topic.querySelectorAll('.sub-nav button').forEach(b => b.classList.toggle('active', b === btn));
+        topic.querySelectorAll('.subtab').forEach(p => p.classList.toggle('active', p.id === `${t.id}-${sub}`));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  });
+}
+
+/* =========================================================
+   TENSE SWITCHING (with theme + animation)
+   ========================================================= */
+let currentTenseId = 'present-continuous';
+function switchTense(newId, event) {
+  if (newId === currentTenseId && !document.getElementById('examsWrap').classList.contains('hidden') === false) {
+    // still show it
+  }
+  const oldT = TENSES.find(t => t.id === currentTenseId);
+  const newT = TENSES.find(t => t.id === newId);
+  if (!newT) return;
+
+  // hide exams if open
+  document.getElementById('examsWrap').classList.add('hidden');
+  document.getElementById('timelineWrap').classList.remove('hidden');
+
+  // theme transition
+  const app = document.getElementById('app');
+  document.body.dataset.zone = newT.zone;
+  app.dataset.zone = newT.zone;
+
+  // direction for panel animation
+  const zoneOrder = { past: 0, present: 1, future: 2 };
+  const dir = oldT && zoneOrder[newT.zone] < zoneOrder[oldT.zone] ? 'left' : 'right';
+
+  // switch panels
+  document.querySelectorAll('.topic').forEach(p => p.classList.remove('active', 'slide-from-right', 'slide-from-left'));
+  const newTopic = document.getElementById('topic-' + newId);
+  newTopic.classList.add('active', dir === 'left' ? 'slide-from-left' : 'slide-from-right');
+
+  // buttons
+  document.querySelectorAll('.tense-btn').forEach(b => b.classList.toggle('active', b.dataset.id === newId));
+
+  // particle burst
+  if (event && event.clientX) themeTransitionBurst(event.clientX, event.clientY, newT.zone);
+
+  // scroll timeline button into view
+  const btn = document.querySelector(`.tense-btn[data-id="${newId}"]`);
+  const scrollEl = document.querySelector('.timeline-scroll');
+  if (btn && scrollEl && scrollEl.scrollWidth > scrollEl.clientWidth) {
+    const br = btn.getBoundingClientRect(), sr = scrollEl.getBoundingClientRect();
+    const target = br.left - sr.left + scrollEl.scrollLeft - (sr.width - br.width) / 2;
+    scrollEl.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }
+  currentTenseId = newId;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =========================================================
+   QUIZ CLASS
+   ========================================================= */
+class Quiz {
+  constructor(container, questions, config) {
+    this.container = container;
+    this.questions = questions;
+    this.config = config || {};
+    this.mode = config.mode || 'basic';
+    this.testKey = config.testKey || 'generic';
+    this.current = 0;
+    this.score = 0;
+    this.answered = false;
+    this.earnedFuntiki = 0;
+    this.render();
+    this.loadQuestion();
+  }
+
+  getReward() {
+    if (this.mode === 'advanced') return FUNTIKI_ADVANCED;
+    if (this.mode === 'exam-basic') return FUNTIKI_EXAM_BASIC;
+    if (this.mode === 'exam-advanced') return FUNTIKI_EXAM_ADV;
+    if (this.mode === 'exam-mega') return FUNTIKI_EXAM_MEGA;
+    return FUNTIKI_BASIC;
+  }
+
+  getPerfectBonus() {
+    if (this.mode === 'advanced') return BONUS_PERFECT_ADV;
+    if (this.mode.startsWith('exam')) return BONUS_PERFECT_EXAM;
+    return BONUS_PERFECT_BASIC;
+  }
+
+  render() {
+    const mode = this.mode;
+    let modeClass = 'basic', modeText = '🎯 Базовый', btnClass = '';
+    if (mode === 'advanced') { modeClass = 'advanced'; modeText = '🔥 Продвинутый'; btnClass = 'advanced'; }
+    else if (mode === 'exam-basic') { modeClass = 'exam'; modeText = '🏁 Экзамен: базовый'; btnClass = 'exam'; }
+    else if (mode === 'exam-advanced') { modeClass = 'exam'; modeText = '🏁 Экзамен: продвинутый'; btnClass = 'exam'; }
+    else if (mode === 'exam-mega') { modeClass = 'exam'; modeText = '🏁 Мега-экзамен'; btnClass = 'exam'; }
+
+    const reward = this.getReward();
+    const fillClass = mode === 'advanced' ? 'advanced' : (mode.startsWith('exam') ? 'exam' : '');
+
+    this.container.innerHTML = `
+      <div class="quiz-header">
+        <span class="mode-badge ${modeClass}">${modeText}</span>
+        <span>Вопрос: <b class="qNum">1</b> / <b class="qTotal">${this.questions.length}</b></span>
+        <span style="font-weight:700">+${reward} 🐽</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill ${fillClass}"></div></div>
+      <div class="gameScreen">
+        <div class="card"><div class="question"></div></div>
+        <div class="answer-area"></div>
+        <div class="feedback"></div>
+        <button class="btn nextBtn ${btnClass}" disabled>Следующий вопрос →</button>
+      </div>
+      <div class="result-screen hidden">
+        <div class="result-emoji">🎉</div>
+        <div class="result-title">Готово!</div>
+        <div class="result-score"></div>
+        <div class="result-reward hidden"></div>
+        <div class="result-msg"></div>
+        <div class="result-actions">
+          <button class="btn outline restartBtn">🔄 Ещё раз</button>
+          <button class="btn shareResultBtn">📤 Поделиться</button>
+        </div>
+      </div>
+    `;
+    this.el = {
+      qNum: this.container.querySelector('.qNum'),
+      progress: this.container.querySelector('.progress-fill'),
+      question: this.container.querySelector('.question'),
+      answerArea: this.container.querySelector('.answer-area'),
+      feedback: this.container.querySelector('.feedback'),
+      nextBtn: this.container.querySelector('.nextBtn'),
+      gameScreen: this.container.querySelector('.gameScreen'),
+      resultScreen: this.container.querySelector('.result-screen'),
+      resultEmoji: this.container.querySelector('.result-emoji'),
+      resultTitle: this.container.querySelector('.result-title'),
+      resultScore: this.container.querySelector('.result-score'),
+      resultReward: this.container.querySelector('.result-reward'),
+      resultMsg: this.container.querySelector('.result-msg'),
+      restartBtn: this.container.querySelector('.restartBtn'),
+      shareBtn: this.container.querySelector('.shareResultBtn'),
+    };
+    this.el.nextBtn.addEventListener('click', () => this.next());
+    this.el.restartBtn.addEventListener('click', () => this.restart());
+    this.el.shareBtn.addEventListener('click', () => shareResult(this));
+  }
+
+  loadQuestion() {
+    this.answered = false;
+    const q = this.questions[this.current];
+    this.el.qNum.textContent = this.current + 1;
+    this.el.feedback.textContent = '';
+    this.el.feedback.className = 'feedback';
+    this.el.nextBtn.disabled = true;
+    this.el.nextBtn.textContent = this.current === this.questions.length - 1 ? 'Показать результат 🏁' : 'Следующий вопрос →';
+    this.el.progress.style.width = (this.current / this.questions.length * 100) + '%';
+    this.buildUI(q);
+  }
+
+  buildUI(q) {
+    const area = this.el.answerArea;
+    area.innerHTML = '';
+    if (q.options) {
+      this.el.question.textContent = q.q;
+      const opts = document.createElement('div');
+      opts.className = 'options';
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = opt;
+        btn.addEventListener('click', (e) => this.selectBasic(i, btn, e));
+        opts.appendChild(btn);
+      });
+      area.appendChild(opts);
+    } else if (q.type === 'input') {
+      this.el.question.innerHTML = q.q.replace('___', '<span class="blank">______</span>');
+      const row = document.createElement('div');
+      row.className = 'input-row';
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'input-answer';
+      input.placeholder = 'Введи ответ...';
+      input.autocomplete = 'off';
+      input.spellcheck = false;
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !input.disabled && input.value.trim()) this.checkInput(); });
+      const btn = document.createElement('button');
+      btn.className = 'check-btn';
+      btn.textContent = 'Проверить';
+      btn.disabled = true;
+      btn.addEventListener('click', () => this.checkInput());
+      input.addEventListener('input', () => { btn.disabled = !input.value.trim(); });
+      row.appendChild(input); row.appendChild(btn);
+      area.appendChild(row);
+      setTimeout(() => input.focus(), 80);
+      this._inputEl = input; this._checkBtnEl = btn;
+    } else if (q.type === 'reorder') {
+      this.el.question.innerHTML = `Составь предложение:<div class="question-hint">${q.hint}</div>`;
+      this._buildSelected = [];
+      this._buildPool = shuffleWords(q.words);
+      const built = document.createElement('div');
+      built.className = 'reorder-built';
+      const pool = document.createElement('div');
+      pool.className = 'reorder-pool';
+      area.appendChild(built); area.appendChild(pool);
+      this._builtEl = built; this._poolEl = pool;
+      this._buildPool.forEach((w, idx) => {
+        const chip = document.createElement('button');
+        chip.className = 'word-chip';
+        chip.textContent = w;
+        chip.dataset.poolIdx = idx;
+        chip.addEventListener('click', () => this._addWord(idx));
+        pool.appendChild(chip);
+      });
+    }
+  }
+
+  _addWord(poolIdx) {
+    if (this.answered) return;
+    const word = this._buildPool[poolIdx];
+    this._buildSelected.push({ word, poolIdx });
+    const poolChip = this._poolEl.querySelector(`[data-pool-idx="${poolIdx}"]`);
+    if (poolChip) poolChip.classList.add('used');
+    this._refreshBuilt();
+    this._updateCheckBtn();
+  }
+  _removeWord(builtIdx) {
+    if (this.answered) return;
+    const item = this._buildSelected[builtIdx];
+    this._buildSelected.splice(builtIdx, 1);
+    const poolChip = this._poolEl.querySelector(`[data-pool-idx="${item.poolIdx}"]`);
+    if (poolChip) poolChip.classList.remove('used');
+    this._refreshBuilt();
+    this._updateCheckBtn();
+  }
+  _refreshBuilt() {
+    this._builtEl.innerHTML = '';
+    this._buildSelected.forEach((item, i) => {
+      const chip = document.createElement('button');
+      chip.className = 'word-chip in-built';
+      chip.textContent = item.word;
+      chip.addEventListener('click', () => this._removeWord(i));
+      this._builtEl.appendChild(chip);
+    });
+  }
+  _updateCheckBtn() {
+    let checkBtn = this.container.querySelector('.reorder-check-btn');
+    const area = this.el.answerArea;
+    if (this._buildSelected.length === 0) {
+      if (checkBtn) checkBtn.disabled = true;
+    } else {
+      if (!checkBtn) {
+        checkBtn = document.createElement('button');
+        checkBtn.className = 'btn reorder-check-btn ' + (this.mode === 'advanced' ? 'advanced' : (this.mode.startsWith('exam') ? 'exam' : ''));
+        checkBtn.textContent = 'Проверить';
+        checkBtn.addEventListener('click', () => this.checkReorder());
+        area.appendChild(checkBtn);
+      }
+      checkBtn.disabled = false;
+    }
+  }
+
+  selectBasic(index, btn, event) {
+    if (this.answered) return;
+    this.answered = true;
+    const q = this.questions[this.current];
+    const all = this.container.querySelectorAll('.option');
+    all.forEach(o => o.classList.add('disabled'));
+    if (index === q.correct) {
+      btn.classList.add('correct');
+      this.score++;
+      this.el.feedback.textContent = '✅ Верно! ' + q.explain;
+      this.el.feedback.classList.add('ok');
+      this.rewardCorrect(event);
+    } else {
+      btn.classList.add('wrong');
+      all[q.correct].classList.add('correct');
+      this.el.feedback.textContent = '❌ Неверно. ' + q.explain;
+      this.el.feedback.classList.add('no');
+    }
+    state.answeredQuestions++; saveState(); updateHeader();
+    this.el.nextBtn.disabled = false;
+    this.el.progress.style.width = ((this.current + 1) / this.questions.length * 100) + '%';
+  }
+
+  checkInput() {
+    if (this.answered || !this._inputEl) return;
+    const q = this.questions[this.current];
+    const ok = q.answers.some(a => normalize(a) === normalize(this._inputEl.value));
+    this.answered = true;
+    this._inputEl.disabled = true; this._checkBtnEl.disabled = true;
+    const r = this._inputEl.getBoundingClientRect();
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    if (ok) {
+      this._inputEl.classList.add('correct');
+      this.score++;
+      this.el.feedback.textContent = '✅ Верно! ' + q.explain;
+      this.el.feedback.classList.add('ok');
+      this.rewardCorrect({ clientX: cx, clientY: cy });
+    } else {
+      this._inputEl.classList.add('wrong');
+      this.el.feedback.textContent = `❌ Правильный ответ: ${q.answers[0]}. ${q.explain}`;
+      this.el.feedback.classList.add('no');
+    }
+    state.answeredQuestions++; saveState(); updateHeader();
+    this.el.nextBtn.disabled = false;
+    this.el.progress.style.width = ((this.current + 1) / this.questions.length * 100) + '%';
+  }
+
+  checkReorder() {
+    if (this.answered) return;
+    const q = this.questions[this.current];
+    const built = this._buildSelected.map(i => i.word).join(' ');
+    const expected = q.words.join(' ');
+    const ok = normalize(built) === normalize(expected);
+    this.answered = true;
+    this._builtEl.classList.add(ok ? 'correct' : 'wrong');
+    this._poolEl.querySelectorAll('.word-chip').forEach(c => c.style.pointerEvents = 'none');
+    this._builtEl.querySelectorAll('.word-chip').forEach(c => c.style.pointerEvents = 'none');
+    const cb = this.container.querySelector('.reorder-check-btn');
+    if (cb) cb.disabled = true;
+    const r = this._builtEl.getBoundingClientRect();
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    if (ok) {
+      this.score++;
+      this.el.feedback.textContent = '✅ Верно! ' + q.explain;
+      this.el.feedback.classList.add('ok');
+      this.rewardCorrect({ clientX: cx, clientY: cy });
+    } else {
+      this.el.feedback.textContent = `❌ Неверно. Правильно: ${expected}`;
+      this.el.feedback.classList.add('no');
+    }
+    state.answeredQuestions++; saveState(); updateHeader();
+    this.el.nextBtn.disabled = false;
+    this.el.progress.style.width = ((this.current + 1) / this.questions.length * 100) + '%';
+  }
+
+  rewardCorrect(event) {
+    const amount = this.getReward();
+    this.earnedFuntiki += amount;
+    const x = event?.clientX ?? window.innerWidth/2;
+    const y = event?.clientY ?? window.innerHeight/2;
+    addFuntiki(amount, x, y);
+  }
+
+  next() {
+    this.current++;
+    if (this.current < this.questions.length) this.loadQuestion();
+    else this.showResult();
+  }
+
+  showResult() {
+    this.el.gameScreen.classList.add('hidden');
+    this.el.resultScreen.classList.remove('hidden');
+    const total = this.questions.length;
+    const percent = Math.round(this.score / total * 100);
+    const isPerfect = this.score === total;
+
+    // save
+    let storeKey = 'bestBasic', listKey = 'completedBasic';
+    if (this.mode === 'advanced') { storeKey = 'bestAdvanced'; listKey = 'completedAdvanced'; }
+    else if (this.mode.startsWith('exam')) { storeKey = 'bestExam'; listKey = 'completedExam'; }
+    if (!state[storeKey][this.testKey] || state[storeKey][this.testKey] < this.score) state[storeKey][this.testKey] = this.score;
+    if (!state[listKey].includes(this.testKey)) state[listKey].push(this.testKey);
+
+    let bonus = 0;
+    if (isPerfect) { bonus = this.getPerfectBonus(); state.totalFuntiki += bonus; }
+    saveState(); updateHeader();
+
+    let emoji, title, msg;
+    if (percent === 100) { emoji = '🏆'; title = 'Идеально!'; msg = 'Все ответы верные — ты знаешь это время!'; }
+    else if (percent >= 70) { emoji = '🎉'; title = 'Отличный результат!'; msg = 'Хорошо усвоил. Ещё чуть-чуть практики!'; }
+    else if (percent >= 50) { emoji = '👍'; title = 'Неплохо!'; msg = 'Стоит повторить правила образования.'; }
+    else { emoji = '📚'; title = 'Нужно повторить'; msg = 'Перечитай теорию и попробуй снова.'; }
+
+    this.el.resultEmoji.textContent = emoji;
+    this.el.resultTitle.textContent = title;
+    this.el.resultScore.textContent = `${this.score} из ${total} (${percent}%)`;
+    const totalEarned = this.earnedFuntiki + bonus;
+    if (totalEarned > 0) {
+      this.el.resultReward.classList.remove('hidden');
+      this.el.resultReward.innerHTML = `<span>🐽</span><span>+${totalEarned} Фунтиков</span>${bonus ? `<span style="font-size:11.5px;opacity:0.8">+${bonus} за идеал</span>` : ''}`;
+    } else this.el.resultReward.classList.add('hidden');
+    this.el.resultMsg.textContent = msg;
+
+    setTimeout(() => {
+      bigCelebration();
+      if (isPerfect) spawnBurst(window.innerWidth/2, window.innerHeight*0.3, { count: 30, emojis: ['🐽','⭐','✨','💫'], spread: 260, duration: 1500 });
+    }, 150);
+    setTimeout(() => checkAchievements(), 500);
+  }
+
+  restart() {
+    this.current = 0; this.score = 0; this.earnedFuntiki = 0;
+    this.el.progress.style.width = '0%';
+    this.el.resultScreen.classList.add('hidden');
+    this.el.gameScreen.classList.remove('hidden');
+    this.loadQuestion();
+  }
+}
+
+/* =========================================================
+   EXAMS
+   ========================================================= */
+function pickRandom(arr, n) { return shuffle(arr).slice(0, n); }
+function withSource(q, tenseId) { return { ...q, _srcTense: tenseId }; }
+
+function buildExamQuestions(type) {
+  if (type === 'exam-basic') {
+    // 15 вопросов: по 1-2 из каждой темы (basic)
+    let pool = [];
+    TENSES.forEach(t => t.basic.forEach(q => pool.push(withSource(q, t.id))));
+    return pickRandom(pool, 15);
+  }
+  if (type === 'exam-advanced') {
+    // 10 вопросов из advanced
+    let pool = [];
+    TENSES.forEach(t => t.advanced.forEach(q => pool.push(withSource(q, t.id))));
+    return pickRandom(pool, 10);
+  }
+  if (type === 'exam-mega') {
+    // 20 вопросов: микс
+    let pool = [];
+    TENSES.forEach(t => {
+      t.basic.forEach(q => pool.push(withSource(q, t.id)));
+      t.advanced.forEach(q => pool.push(withSource(q, t.id)));
+    });
+    return pickRandom(pool, 20);
+  }
+  return [];
+}
+
+function buildExams() {
+  const wrap = document.getElementById('examsWrap');
+  wrap.innerHTML = `
+    <h2>🏁 Экзамены</h2>
+    <p>Смешанные вопросы из разных времён — попробуй угадать, какое время здесь используется! Подсказки нет.</p>
+    <div class="exam-grid" id="examGrid"></div>
+    <div id="activeExamWrap" class="hidden"></div>
+    <button class="btn outline hidden" id="closeExamBtn" style="margin-top:12px">← К списку экзаменов</button>
+  `;
+  const grid = wrap.querySelector('#examGrid');
+  const exams = [
+    { id: 'exam-basic',    icon: '🎯', name: 'Базовый экзамен',      desc: 'Простой уровень: выбор ответа. 15 вопросов из всех 12 времён.', time: '10 мин', diff: 'Easy', hot: false },
+    { id: 'exam-advanced', icon: '🔥', name: 'Продвинутый экзамен',  desc: '10 вопросов из продвинутых тестов: ввод и сборка предложений.', time: '12 мин', diff: 'Hard', hot: true },
+    { id: 'exam-mega',     icon: '💪', name: 'Мега-экзамен',         desc: '20 смешанных вопросов всех типов. Настоящее испытание!',          time: '20 мин', diff: 'Mega', hot: true }
+  ];
+  exams.forEach(e => {
+    const card = document.createElement('div');
+    card.className = 'exam-card';
+    card.innerHTML = `
+      <span class="exam-icon">${e.icon}</span>
+      <div class="exam-name">${e.name}</div>
+      <div class="exam-desc">${e.desc}</div>
+      <div class="exam-meta">
+        <span class="exam-chip">⏱ ${e.time}</span>
+        <span class="exam-chip ${e.hot ? 'hot' : ''}">${e.diff}</span>
+      </div>
+    `;
+    card.addEventListener('click', () => startExam(e.id));
+    grid.appendChild(card);
+  });
+
+  wrap.querySelector('#closeExamBtn').addEventListener('click', closeExam);
+}
+
+function startExam(examId) {
+  const wrap = document.getElementById('examsWrap');
+  const grid = wrap.querySelector('#examGrid');
+  const activeWrap = wrap.querySelector('#activeExamWrap');
+  const closeBtn = wrap.querySelector('#closeExamBtn');
+
+  grid.classList.add('hidden');
+  closeBtn.classList.remove('hidden');
+  activeWrap.classList.remove('hidden');
+  activeWrap.innerHTML = '';
+
+  const quizEl = document.createElement('div');
+  quizEl.className = 'quiz';
+  activeWrap.appendChild(quizEl);
+
+  const questions = buildExamQuestions(examId);
+  const testKeyMap = { 'exam-basic': 'basic-exam', 'exam-advanced': 'advanced-exam', 'exam-mega': 'mega-exam' };
+  new Quiz(quizEl, questions, { mode: examId, testKey: testKeyMap[examId] || examId });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeExam() {
+  const wrap = document.getElementById('examsWrap');
+  wrap.querySelector('#examGrid').classList.remove('hidden');
+  wrap.querySelector('#activeExamWrap').classList.add('hidden');
+  wrap.querySelector('#closeExamBtn').classList.add('hidden');
+  wrap.querySelector('#activeExamWrap').innerHTML = '';
+}
+
+document.getElementById('examsBtn').addEventListener('click', () => {
+  document.getElementById('timelineWrap').classList.add('hidden');
+  document.getElementById('topicsWrap').querySelectorAll('.topic').forEach(t => t.classList.remove('active'));
+  const wrap = document.getElementById('examsWrap');
+  wrap.classList.remove('hidden');
+  closeExam();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // small burst
+  spawnBurst(window.innerWidth / 2, 120, { count: 18, emojis: ['🏁','✨','⭐'], spread: 180 });
+});
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+function generateShareText(extra) {
+  const achi = state.achievements.length;
+  const text = `${state.avatar || '🐷'} ${state.name || 'Игрок'} набрал ${state.totalFuntiki} Фунтиков в English Tenses! ` +
+    `${achi} ${achi === 1 ? 'ачивка' : 'ачивок'} 🏆` +
+    (extra ? ` ${extra}` : '') +
+    `\nОбгони меня 🐽`;
+  return text;
+}
+async function shareApp(extra) {
+  const text = generateShareText(extra);
+  const shareData = {
+    title: 'English Tenses — играй и учись',
+    text: text,
+    url: location.href
+  };
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      spawnBurst(window.innerWidth / 2, window.innerHeight / 2, { count: 15, emojis: ['📤','✨','🐽'], spread: 150 });
+    } else {
+      await navigator.clipboard.writeText(text + '\n' + location.href);
+      showToast({ icon: '📋', title: 'Скопировано!', desc: 'Вставь сообщение в чат или соцсеть.' });
+    }
+  } catch (e) {
+    // fallback copy
+    try {
+      await navigator.clipboard.writeText(text + '\n' + location.href);
+      showToast({ icon: '📋', title: 'Скопировано!', desc: 'Вставь сообщение в чат или соцсеть.' });
+    } catch {}
+  }
+}
+function shareResult(quiz) {
+  const total = quiz.questions.length;
+  const percent = Math.round(quiz.score / total * 100);
+  const extra = `Результат: ${quiz.score}/${total} (${percent}%) 🔥`;
+  shareApp(extra);
+}
+
+document.getElementById('shareBtn').addEventListener('click', () => shareApp());
+
+/* =========================================================
+   ACHIEVEMENTS MODAL
+   ========================================================= */
+function renderAchievements() {
+  const grid = document.getElementById('achGrid');
+  grid.innerHTML = '';
+  ACHIEVEMENTS.forEach(a => {
+    const unlocked = state.achievements.includes(a.id);
+    const card = document.createElement('div');
+    card.className = 'ach-card ' + (unlocked ? 'unlocked' : 'locked');
+    card.innerHTML = `
+      ${!unlocked ? '<span class="ach-locked-tag">🔒</span>' : ''}
+      <div class="ach-icon">${a.icon}</div>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>
+      <div class="ach-reward">+${a.reward} 🐽</div>
+    `;
+    grid.appendChild(card);
+  });
+  document.getElementById('achCount').textContent = state.achievements.length;
+  document.getElementById('achTotal').textContent = ACHIEVEMENTS.length;
+}
+document.getElementById('achBtn').addEventListener('click', () => {
+  renderAchievements();
+  document.getElementById('achModal').classList.remove('hidden');
+  document.getElementById('achBtn').classList.remove('has-new');
+});
+document.getElementById('closeAchBtn').addEventListener('click', () => {
+  document.getElementById('achModal').classList.add('hidden');
+});
+document.getElementById('achModal').addEventListener('click', (e) => {
+  if (e.target.id === 'achModal') document.getElementById('achModal').classList.add('hidden');
+});
+
+/* =========================================================
+   WELCOME / PROFILE MODAL
+   ========================================================= */
+const welcomeModal = document.getElementById('welcomeModal');
+const nameInput = document.getElementById('nameInput');
+const startBtn = document.getElementById('startBtn');
+const emojiGrid = document.getElementById('emojiGrid');
+let pickedEmoji = '🐷';
+let editing = false;
+
+function buildEmojiPicker() {
+  emojiGrid.innerHTML = '';
+  AVAILABLE_EMOJIS.forEach(e => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-opt';
+    btn.textContent = e;
+    btn.dataset.emoji = e;
+    if (e === pickedEmoji) btn.classList.add('selected');
+    btn.addEventListener('click', () => {
+      pickedEmoji = e;
+      emojiGrid.querySelectorAll('.emoji-opt').forEach(b => b.classList.toggle('selected', b.dataset.emoji === e));
+      document.getElementById('welcomeEmoji').textContent = e;
+      // small burst
+      const r = btn.getBoundingClientRect();
+      spawnBurst(r.left + r.width/2, r.top + r.height/2, { count: 6, emojis: [e, '✨'], spread: 60, duration: 600 });
+    });
+    emojiGrid.appendChild(btn);
+  });
+}
+
+function showWelcome(editMode = false) {
+  editing = editMode;
+  pickedEmoji = state.avatar || '🐷';
+  nameInput.value = state.name || '';
+  document.getElementById('welcomeEmoji').textContent = pickedEmoji;
+  document.getElementById('welcomeTitle').textContent = editMode ? 'Профиль' : 'Привет!';
+  document.getElementById('welcomeSub').innerHTML = editMode
+    ? 'Измени имя или аватар'
+    : 'Как тебя зовут? Будем собирать <b>Фунтики</b> 🐽 и открывать достижения 🏆';
+  startBtn.textContent = editMode ? 'Сохранить ✓' : 'Поехали! 🚀';
+  buildEmojiPicker();
+  welcomeModal.classList.remove('hidden');
+  setTimeout(() => nameInput.focus(), 200);
+}
+function commitName() {
+  const name = nameInput.value.trim().slice(0, 20);
+  if (name.length < 1) {
+    nameInput.style.borderColor = '#e53935';
+    nameInput.style.boxShadow = '0 0 0 4px rgba(229,57,53,0.15)';
+    return;
+  }
+  state.name = name;
+  state.avatar = pickedEmoji;
+  saveState();
+  welcomeModal.classList.add('hidden');
+  updateHeader();
+  if (!editing) {
+    spawnBurst(window.innerWidth / 2, window.innerHeight * 0.4, { count: 24, emojis: ['🐽','🎉','✨','⭐'], spread: 240, duration: 1400 });
+  } else {
+    showToast({ icon: '✓', title: 'Сохранено', desc: 'Профиль обновлён' });
+  }
+  checkAchievements();
+}
+startBtn.addEventListener('click', commitName);
+nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') commitName(); });
+nameInput.addEventListener('input', () => {
+  nameInput.style.borderColor = '';
+  nameInput.style.boxShadow = '';
+});
+document.getElementById('avatar').addEventListener('click', () => showWelcome(true));
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+buildTimeline();
+buildTopics();
+buildExams();
+updateHeader();
+
+if (!state.name) {
+  setTimeout(() => showWelcome(false), 200);
+} else {
+  markNewAchievement();
+}
+
+// set initial zone theme
+const initial = TENSES.find(t => t.id === currentTenseId);
+if (initial) {
+  document.getElementById('app').dataset.zone = initial.zone;
+  document.body.dataset.zone = initial.zone;
+  document.querySelectorAll('.topic').forEach(p => p.classList.remove('active'));
+  document.getElementById('topic-' + currentTenseId).classList.add('active', 'slide-from-right');
+}
+</script>
+</body>
+</html>
